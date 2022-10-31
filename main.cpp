@@ -35,10 +35,20 @@ void tc3()
 
     cout << s3->getParTreeSize("l") << endl;
     cout << s3->getParTreeStringPreOrder("l") << endl;
+    cout << s3->getParTreeSize("") << endl;
+    cout << s3->getParTreeStringPreOrder("") << endl;
+    
+    ConcatStringTree* s4 = new ConcatStringTree(s3->reverse());
+
+    cout << s4->getParTreeSize("") << endl;
+    cout << s4->getParTreeStringPreOrder("") << endl;
+    cout << s4->getParTreeSize("l") << endl;
+    cout << s4->getParTreeStringPreOrder("l") << endl;
 
     delete s1;
     delete s2;
     delete s3;
+    delete s4;
 }
 
 void tc4()

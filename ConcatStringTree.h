@@ -3,6 +3,8 @@
 
 #include "main.h"
 
+struct ParentsTree;
+
 struct CSTNode{
     int leftLength;
     int length;
@@ -12,6 +14,8 @@ struct CSTNode{
     CSTNode *right;
     CSTNode *alternative1 = nullptr;
     CSTNode *alternative2 = nullptr;
+
+    ParentsTree parent;
     CSTNode(int,int,string, CSTNode *, CSTNode * );
 };
 
@@ -32,16 +36,16 @@ public:
     struct PTNode * root;
     static int maxIndex ;
     int index ;
-    
+    int size = 0 ;
     ParentsTree(){
         maxIndex++;
         if(maxIndex>= 10000000){
             throw overflow_error("Id is overflow!");
         }
-        index = ++maxIndex;
+        index = maxIndex;
         this->root = NULL;
     }
-    int calheight(struct PTNode *p){
+    int calHeight(struct PTNode *p){
 
             if(p->left && p->right){
             if (p->left->height < p->right->height)
@@ -82,7 +86,6 @@ public:
         return tp; 
     }
 
-
     struct PTNode * rrrotation(struct PTNode *n){
         struct PTNode *p;
         struct PTNode *tp;
@@ -94,7 +97,6 @@ public:
 
         return tp; 
     }
-
 
     struct PTNode * rlrotation(struct PTNode *n){
         struct PTNode *p;
@@ -137,16 +139,18 @@ public:
             r = n;
             r->left = r->right = NULL;
             r->height = 1; 
+
+            size++;
             return r;             
         }
         else{
-            if(data < r->data)
+            if(data->leftLength < r->data->leftLength)
             r->left = insert(r->left,data);
             else
             r->right = insert(r->right,data);
         }
 
-        r->height = calheight(r);
+        r->height = calHeight(r);
 
         if(balanceFactor(r)==2 && balanceFactor(r->left)==1){
             r = llrotation(r);
@@ -176,10 +180,10 @@ public:
 
         struct PTNode *t;
         struct PTNode *q;
-        if(p->data < data){
+        if(p->data->leftLength < data->leftLength){
             p->right = deleteNode(p->right,data);
         }
-        else if(p->data > data){
+        else if(p->data->leftLength > data->leftLength){
             p->left = deleteNode(p->left,data);
         }
         else{
@@ -228,7 +232,7 @@ public:
 
 
 class ConcatStringTree {
-
+    ParentsTree *parentsTree;
     CSTNode *root;
     bool isTemporary;
     bool isShallowNorDeep;

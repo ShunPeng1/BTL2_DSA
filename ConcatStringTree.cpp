@@ -35,10 +35,11 @@ CSTNode::CSTNode(int _leftLength=0, int _length = 0, string _data = "", CSTNode 
 CST::CST(CSTNode *_root = nullptr,  bool _isTemporary = false, bool _isShallowNorDeep = false): 
     root(_root),
     isTemporary(_isTemporary),
-    isShallowNorDeep(_isShallowNorDeep)
+    isShallowNorDeep(_isShallowNorDeep),
+    parentsTree(new ParentsTree())
 {
-
-}
+    parentsTree->insert(parentsTree->root, root);
+}  
 
 CST::CST(const CST&& otherS) {
     this->root = nullptr;
@@ -46,6 +47,7 @@ CST::CST(const CST&& otherS) {
     this->isTemporary = false;
     if (otherS.isShallowNorDeep) {//is return from concat so we shallow copy
         (this->root) = (otherS.root);
+        this->parentsTree = otherS.parentsTree;
     }
     else {//is return from the reverse or substring so we deep copy
     
@@ -93,6 +95,8 @@ CST::CST(const char * s){
     isShallowNorDeep = false;
     isTemporary = false;
 
+    parentsTree = new ParentsTree();
+    parentsTree->insert(parentsTree->root, tpCSTN);
 }
 
 CST::~CST(){

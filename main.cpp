@@ -170,7 +170,16 @@ void tc12(){
     cout<<"s7 = "<<s7.toStringPreOrder()<<endl;
 
 }
-
+void tc14(){
+    ConcatStringTree s1("Hello");
+        ConcatStringTree s2 = s1.concat(s1).concat(s1);
+        ConcatStringTree s3 = s1.concat(s2).subString(0, s2.length());
+        cout << s3.toStringPreOrder()<<endl;
+        
+        ConcatStringTree s4 = s3.reverse();
+        cout << s4.toStringPreOrder()<<endl;
+        cout << "\n";
+}
 void tc17(){
     CST sA("Hello"), sB(",_t"), sC("his_is"), sD("_an");
     CST s1 = sA.concat(sB), s2 = sC.concat(sD), s3 = s1.concat(s2);
@@ -203,7 +212,7 @@ void tc18(){
     cout<<"s3 = "<<s3.toStringPreOrder()<<endl;
     cout<<"s3 = "<<s3.toString()<<endl; 
     
-    CST s4 = s3.subString(0,s3.length());
+    CST s4 = s3.subString(7,s3.length()-5);
     
     cout<<"s4 = "<<s4.toStringPreOrder()<<endl;
     cout<<"s4 = "<<s4.toString()<<endl; 

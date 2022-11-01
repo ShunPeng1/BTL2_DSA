@@ -3,7 +3,6 @@
 
 #include "main.h"
 
-struct ParentsTree;
 
 struct CSTNode{
     int leftLength;
@@ -15,7 +14,7 @@ struct CSTNode{
     CSTNode *alternative1 = nullptr;
     CSTNode *alternative2 = nullptr;
 
-    ParentsTree parent;
+    
     CSTNode(int,int,string, CSTNode *, CSTNode * );
 };
 
@@ -72,6 +71,7 @@ public:
             else if(n->left== NULL && n->right ){
                 return -n->right->height;
             }
+            return 0;
     }
 
     struct PTNode * llrotation(struct PTNode *n){
@@ -232,7 +232,6 @@ public:
 
 
 class ConcatStringTree {
-    ParentsTree *parentsTree;
     CSTNode *root;
     bool isTemporary;
     bool isShallowNorDeep;
@@ -312,18 +311,18 @@ void preorder(CSTNode* node, T &result, void (*executeFunc) (CSTNode *, T &) )
 
 
 template <class T> 
-void postorder(CSTNode* node, T &result, void (*executeFunc) (CSTNode *, T &) )
+CSTNode* postorder(CSTNode* node, T &result, CSTNode* (*executeFunc) (CSTNode *, T &, CSTNode*, CSTNode*) )
 {
     if (node == nullptr)
-        return;
+        return nullptr;
  
     /* then recur on left subtree */
-    postorder(node->left, result, executeFunc);
+    CSTNode * left = postorder(node->left, result, executeFunc);
     
     /* now recur on right subtree */
-    postorder(node->right, result, executeFunc);
+    CSTNode *right =  postorder(node->right, result, executeFunc);
     
-    executeFunc(node , result);
+    return executeFunc(node, result, left, right);
 }
 
 #endif // __CONCAT_STRING_TREE_H__

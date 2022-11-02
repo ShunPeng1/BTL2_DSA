@@ -180,6 +180,24 @@ void tc14(){
         cout << s4.toStringPreOrder()<<endl;
         cout << "\n";
 }
+
+void tc15(){
+      ConcatStringTree sA("ABC"), sB("DEF"), sC("GHI");
+
+        ConcatStringTree s1 = sA.concat(sB); // ABCDEF
+
+        ConcatStringTree s2 = sB.concat(sC); // DEFGHI
+
+        ConcatStringTree s3 = s1.concat(s2); // ABCDEFDEFGHI
+
+        ConcatStringTree s4 = s3.subString(1, s3.length()-1);
+
+        ConcatStringTree s5 = s3.reverse();
+
+        cout << s4.toString() << endl; // BCDEFDEFGH
+
+        cout << s5.toString() << endl; // IHGFEDFEDCBA
+}
 void tc17(){
     CST sA("Hello"), sB(",_t"), sC("his_is"), sD("_an");
     CST s1 = sA.concat(sB), s2 = sC.concat(sD), s3 = s1.concat(s2);
@@ -355,6 +373,6 @@ void tc166(){
 }
 
 int main() {
-    tc166();
+    tc15();
     return 0;
 }

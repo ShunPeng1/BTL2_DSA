@@ -3,27 +3,21 @@
 
 #include "main.h"
 
+struct CSTNode;
 
-struct CSTNode{
-    int leftLength;
-    int length;
-    string data;
-    
-    CSTNode *left; 
-    CSTNode *right;
-    CSTNode *alternative1 = nullptr;
-    CSTNode *alternative2 = nullptr;
 
-    
-    CSTNode(int,int,string, CSTNode *, CSTNode * );
-};
+class PTNode {
+public:   
+    static int maxId;
+    int id ;
 
-struct PTNode {
-    struct PTNode *left;
+    PTNode *left;
+    PTNode *right;
+
     CSTNode* data;
     int height;
-    struct PTNode *right;
 
+    PTNode( CSTNode*, int , PTNode *, PTNode*);
 };
 
 
@@ -32,19 +26,12 @@ class ParentsTree
 private:
     
 public:
-    struct PTNode * root;
-    static int maxIndex ;
-    int index ;
+    PTNode * root;
     int size = 0 ;
     ParentsTree(){
-        maxIndex++;
-        if(maxIndex>= 10000000){
-            throw overflow_error("Id is overflow!");
-        }
-        index = maxIndex;
-        this->root = NULL;
+        root = nullptr;
     }
-    int calHeight(struct PTNode *p){
+    int calHeight(PTNode *p){
 
             if(p->left && p->right){
             if (p->left->height < p->right->height)
@@ -61,7 +48,7 @@ public:
 
     }
 
-    int balanceFactor(struct PTNode *n){
+    int balanceFactor(PTNode *n){
             if(n->left && n->right){
                 return n->left->height - n->right->height; 
             }
@@ -74,9 +61,9 @@ public:
             return 0;
     }
 
-    struct PTNode * llrotation(struct PTNode *n){
-        struct PTNode *p;
-        struct PTNode *tp;
+    PTNode * llrotation(PTNode *n){
+        PTNode *p;
+        PTNode *tp;
         p = n;
         tp = p->left;
 
@@ -86,9 +73,9 @@ public:
         return tp; 
     }
 
-    struct PTNode * rrrotation(struct PTNode *n){
-        struct PTNode *p;
-        struct PTNode *tp;
+    PTNode * rrrotation(PTNode *n){
+        PTNode *p;
+        PTNode *tp;
         p = n;
         tp = p->right;
 
@@ -98,10 +85,10 @@ public:
         return tp; 
     }
 
-    struct PTNode * rlrotation(struct PTNode *n){
-        struct PTNode *p;
-        struct PTNode *tp;
-        struct PTNode *tp2;
+    PTNode * rlrotation(PTNode *n){
+        PTNode *p;
+        PTNode *tp;
+        PTNode *tp2;
         p = n;
         tp = p->right;
         tp2 =p->right->left;
@@ -114,10 +101,10 @@ public:
         return tp2; 
     }
 
-    struct PTNode * lrrotation(struct PTNode *n){
-        struct PTNode *p;
-        struct PTNode *tp;
-        struct PTNode *tp2;
+    PTNode * lrrotation(PTNode *n){
+        PTNode *p;
+        PTNode *tp;
+        PTNode *tp2;
         p = n;
         tp = p->left;
         tp2 =p->left->right;
@@ -130,21 +117,14 @@ public:
         return tp2; 
     }
 
-    struct PTNode* insert(struct PTNode *r,CSTNode* data){
+    PTNode* insert(PTNode *r,PTNode* data){
         
         if(r==NULL){
-            struct PTNode *n;
-            n = new struct PTNode;
-            n->data = data;
-            r = n;
-            r->left = r->right = NULL;
-            r->height = 1; 
-
             size++;
-            return r;             
+            return data;             
         }
         else{
-            if(data->leftLength < r->data->leftLength)
+            if(data->id < r->id)
             r->left = insert(r->left,data);
             else
             r->right = insert(r->right,data);
@@ -169,7 +149,7 @@ public:
 
         }
 
-    struct PTNode * deleteNode(struct PTNode *p,CSTNode* data){
+    PTNode * deleteNode(PTNode *p, int dataId){
 
         if(p->left == NULL && p->right == NULL){
                 if(p==this->root)
@@ -178,24 +158,26 @@ public:
             return NULL;
         }
 
-        struct PTNode *t;
-        struct PTNode *q;
-        if(p->data->leftLength < data->leftLength){
-            p->right = deleteNode(p->right,data);
+        PTNode *t;
+        PTNode *q;
+        if(p->id < dataId){
+            p->right = deleteNode(p->right,dataId);
         }
-        else if(p->data->leftLength > data->leftLength){
-            p->left = deleteNode(p->left,data);
+        else if(p->id > dataId){
+            p->left = deleteNode(p->left,dataId);
         }
         else{
             if(p->left != NULL){
                 q = inpre(p->left);
+                p->id = q->id;
                 p->data = q->data;
-                p->left=deleteNode(p->left,q->data);
+                p->left=deleteNode(p->left,q->id);
             }
             else{
                 q = insuc(p->right);
+                p->id = q->id;
                 p->data = q->data;
-                p->right = deleteNode(p->right,q->data);
+                p->right = deleteNode(p->right,q->id);
             }
         }
 
@@ -210,13 +192,13 @@ public:
         return p;
     }
 
-    struct PTNode* inpre(struct PTNode* p){
+    PTNode* inpre(PTNode* p){
         while(p->right!=NULL)
             p = p->right;
         return p;    
     }
 
-    struct PTNode* insuc(struct PTNode* p){
+    PTNode* insuc(PTNode* p){
         while(p->left!=NULL)
             p = p->left;
 
@@ -229,6 +211,17 @@ public:
 };
 
 
+struct CSTNode{
+    int leftLength;
+    int length;
+    string data;
+    
+    CSTNode *left; 
+    CSTNode *right;
+
+    class ParentsTree parent;
+    CSTNode(int,int,string, CSTNode *, CSTNode * );
+};
 
 
 class ConcatStringTree {

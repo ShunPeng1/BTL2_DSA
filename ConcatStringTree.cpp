@@ -20,7 +20,7 @@ typedef long long ll;
 
 #define CST ConcatStringTree
 
-
+// CSTNode SECTION
 CSTNode::CSTNode(int _leftLength=0, int _length = 0, string _data = "", CSTNode *_left = nullptr, CSTNode *_right=nullptr ): 
     leftLength(_leftLength),
     length(_length),
@@ -28,56 +28,18 @@ CSTNode::CSTNode(int _leftLength=0, int _length = 0, string _data = "", CSTNode 
     left(_left),
     right(_right)
 {
-
+    PTNode *ptnode = new PTNode(this, 0, nullptr, nullptr);
+    parent.insert(parent.root,ptnode);
 }
 
-
+// CST SECTION
 CST::CST(CSTNode *_root = nullptr,  bool _isTemporary = false, bool _isShallowNorDeep = false): 
     root(_root),
     isTemporary(_isTemporary),
     isShallowNorDeep(_isShallowNorDeep)
 {
 }  
-/*
-CST::CST(const CST&& otherS) {
-    this->root = nullptr;
-    this->isShallowNorDeep = false;
-    this->isTemporary = false;
-    if (otherS.isShallowNorDeep) {//is return from concat so we shallow copy
-        (this->root) = (otherS.root);
-    }
-    else {//is return from the reverse or substring so we deep copy
-    
-        
-        struct TempStruct{
 
-            static void executeFunc(CSTNode *a, int &result){
-
-                CSTNode *tpNode = new CSTNode();
-                *(tpNode) = *(a);
-                a->alternative1 = tpNode;
-                if(a->left!= nullptr) {
-                    tpNode->left = a->left->alternative1;
-                    a->left->alternative1 = nullptr;
-                    delete a->left;
-                }
-                if(a->right!= nullptr) {
-                    tpNode->right = a->right->alternative1;
-                    a->right->alternative1 = nullptr;
-                    delete a->right;
-                }            
-            }
-        };
-        int blank;
-        postorder(otherS.root, blank, TempStruct::executeFunc);
-
-        this->root = otherS.root->alternative1;
-        delete otherS.root;
-
-    }
-    
-}
-*/
 CST::CST(const CST&& otherS) {
     this->root = nullptr;
     this->isShallowNorDeep = false;
@@ -129,7 +91,6 @@ CST::~CST(){
 int CST::length() const{
     return root->length;
 }
-
 
 char CST::get(int index){
     if (index < 0 || index >= length()) {
@@ -233,168 +194,6 @@ ConcatStringTree CST::concat(const ConcatStringTree & otherS) const{
     return (CST&&)result;
 }
 
-/*
-ConcatStringTree CST::subString(int from, int to) const{
-    if (from <0 || to>length()) {
-        throw out_of_range("Index of string is invalid!");
-    }
-
-    if (from >= to) {
-        throw logic_error("Invalid range!");
-    }
-
-    struct TempStruct{
-        int from;
-        int to;
-        int current;
-
-        static void executeFunc(CSTNode *a, TempStruct &result){
-            
-            if(a->left == nullptr && a->right == nullptr){//is string node
-                string tpStr = "";
-                FOR(i, 0, a->length) {
-                    int currentPos = result.current + i;
-                    if(currentPos >= result.from && currentPos < result.to) {
-                        tpStr += a->data[i];
-                    }
-                }
-                if(tpStr.size()!= 0){
-                    CSTNode *tpNode = new CSTNode(0,tpStr.size(),tpStr);
-                    if(!a->alternative1) a->alternative1 = tpNode;
-                    else a->alternative2 = tpNode;
-                }
-                result.current+= a->length;
-            }
-            else{//non-string node
-                bool isAlternative  = false ;            
-                CSTNode *tpNode = new CSTNode();
-
-                if(a->left != nullptr && a->left->alternative1!=nullptr){
-                    tpNode->leftLength = a->left->alternative1->length;
-                    tpNode->left = a->left->alternative1;
-                    tpNode->length += a->left->alternative1->length;
-                    a->left->alternative1 = nullptr;
-                    isAlternative = true;
-                }
-
-                if(a->right != nullptr && a->right->alternative1!=nullptr){
-                    tpNode->right = a->right->alternative1;
-                    tpNode->length += a->right->alternative1->length;
-                    a->right->alternative1 = nullptr;
-                    isAlternative = true;
-                }
-                else if(a->right != nullptr && a->right->alternative2!=nullptr){
-                    tpNode->right = a->right->alternative2;
-                    tpNode->length += a->right->alternative2->length;
-                    a->right->alternative2 = nullptr;
-                    isAlternative = true;
-                }
-
-                if(isAlternative){
-                    if(!a->alternative1) a->alternative1 = tpNode;
-                    else a->alternative2 = tpNode;
-                }
-                else{
-                    delete tpNode;
-                }
-            }
-        }
-    };
-
-    TempStruct obj{from, to , 0};
-    postorder(root, obj, TempStruct::executeFunc);
-
-    CST result;
-    result.root = root->alternative1;
-    result.isTemporary = true;
-    result.isShallowNorDeep =false;
-
-    //cout<<result.toStringPreOrder()<<endl;
-    root->alternative1 = nullptr;
-    return (CST&&) result;
-
-}
-
-
-ConcatStringTree CST::reverse() const{
-    
-    struct TempStruct{
-        int from;
-        int to;
-        int current;
-
-        static void executeFunc(CSTNode *a, TempStruct &result){
-            
-            if(a->left == nullptr && a->right == nullptr){//is string node
-                
-                string tpStr = "";
-                FORR(i, 0, a->length) {
-                    tpStr += a->data[i];
-                }
-
-                CSTNode *tpNode = new CSTNode(0,tpStr.size(),tpStr);
-                if(!a->alternative1) a->alternative1 = tpNode;
-                else a->alternative2 = tpNode;
-                
-            }
-            else{//non-string node
-                bool isAlternative  = false ;            
-                CSTNode *tpNode = new CSTNode();
-
-                if(a->left != nullptr && a->left->alternative1!=nullptr){
-                    tpNode->right = a->left->alternative1;
-                    tpNode->length += a->left->alternative1->length;
-
-                    a->left->alternative1 = nullptr;
-                    isAlternative = true;
-                }
-                
-                if(a->right != nullptr && a->right->alternative1!=nullptr){
-                    tpNode->leftLength = a->right->alternative1->length;
-                    tpNode->left = a->right->alternative1;
-                    tpNode->length += a->right->alternative1->length;
-
-                    a->right->alternative1 = nullptr;
-                    isAlternative = true;
-                }
-                else if(a->right != nullptr && a->right->alternative2!=nullptr){
-                    tpNode->leftLength = a->right->alternative2->length;
-                    tpNode->left = a->right->alternative2;
-                    tpNode->length += a->right->alternative2->length;
-
-                    a->right->alternative2 = nullptr;
-                    isAlternative = true;
-                }
-
-                
-                if(isAlternative){
-                    if(!a->alternative1)a->alternative1 = tpNode;
-                    else a->alternative2 = tpNode;
-                }
-                else{
-                    delete tpNode;
-                }
-            }
-        }
-    };
-
-    TempStruct obj;
-    postorder(root, obj, TempStruct::executeFunc);
-
-    CST result;
-    result.root = root->alternative1;
-    result.isTemporary = true;
-    result.isShallowNorDeep =false;
-
-    //cout<<result.toStringPreOrder()<<endl;
-    root->alternative1 = nullptr;
-    return (CST&&) result;
-
-}
-
-*/
-
-
 ConcatStringTree CST::subString(int from, int to) const{
     if (from <0 || to>length()) {
         throw out_of_range("Index of string is invalid!");
@@ -456,11 +255,9 @@ ConcatStringTree CST::subString(int from, int to) const{
     result.isShallowNorDeep =false;
 
     //cout<<result.toStringPreOrder()<<endl;
-    root->alternative1 = nullptr;
     return (CST&&) result;
 
 }
-
 
 ConcatStringTree CST::reverse() const{
     
@@ -502,9 +299,20 @@ ConcatStringTree CST::reverse() const{
     result.isShallowNorDeep =false;
 
     //cout<<result.toStringPreOrder()<<endl;
-    root->alternative1 = nullptr;
     return (CST&&) result;
 
+}
+
+// PTNode SECTION
+int PTNode::maxId = 0;
+PTNode::PTNode( CSTNode* _data = nullptr, int _height = 0, PTNode * _left = nullptr, PTNode* _right = nullptr):
+    data(_data), height(_height), left(_left), right(_right)
+{
+    maxId++;
+    if(maxId>= 10000000){
+        throw overflow_error("Id is overflow!");
+    }
+    id = maxId;
 }
 
 /*

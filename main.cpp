@@ -26,22 +26,30 @@ void tc2()
     cout << s3.subString(5, 6).toString() << endl;
     cout << s3.reverse().toString() << endl;
 }
-/*
+
 void tc3()
 {
     ConcatStringTree* s1 = new ConcatStringTree("a");
+    
+    cout << s1->getParTreeSize("") << endl;
+    cout << s1->getParTreeStringPreOrder("") << endl;
     ConcatStringTree* s2 = new ConcatStringTree("b");
+    
+    cout << s2->getParTreeSize("") << endl;
+    cout << s2->getParTreeStringPreOrder("") << endl;
     ConcatStringTree* s3 = new ConcatStringTree(s1->concat(*s2));
 
-    cout << s3->getParTreeSize("l") << endl;
-    cout << s3->getParTreeStringPreOrder("l") << endl;
     cout << s3->getParTreeSize("") << endl;
     cout << s3->getParTreeStringPreOrder("") << endl;
+    
+    cout << s3->getParTreeSize("l") << endl;
+    cout << s3->getParTreeStringPreOrder("l") << endl;
     
     ConcatStringTree* s4 = new ConcatStringTree(s3->reverse());
 
     cout << s4->getParTreeSize("") << endl;
     cout << s4->getParTreeStringPreOrder("") << endl;
+
     cout << s4->getParTreeSize("l") << endl;
     cout << s4->getParTreeStringPreOrder("l") << endl;
 
@@ -50,7 +58,7 @@ void tc3()
     delete s3;
     delete s4;
 }
-
+/*
 void tc4()
 {
     HashConfig hashConfig(
@@ -88,6 +96,17 @@ void tc5()
     cout << "Please focus to id: " << s3.getParTreeStringPreOrder("") << endl;
 }
 //*/
+
+void tc6(){
+    ConcatStringTree s1("Hello");
+    ConcatStringTree s2(",_t");
+    ConcatStringTree s3 = s1.concat(s2);
+    cout << s3.toStringPreOrder() << endl;
+    cout << s3.toString() << endl;
+    cout << s3.subString(5, 6).toString() << endl;
+    cout << s3.reverse().toString() << endl;
+}
+
 void tc11(){
     
     CST s1("Hello"), s2("World");
@@ -182,7 +201,7 @@ void tc14(){
 }
 
 void tc15(){
-      ConcatStringTree sA("ABC"), sB("DEF"), sC("GHI");
+        ConcatStringTree sA("ABC"), sB("DEF"), sC("GHI");
 
         ConcatStringTree s1 = sA.concat(sB); // ABCDEF
 
@@ -191,12 +210,41 @@ void tc15(){
         ConcatStringTree s3 = s1.concat(s2); // ABCDEFDEFGHI
 
         ConcatStringTree s4 = s3.subString(1, s3.length()-1);
+        
 
         ConcatStringTree s5 = s3.reverse();
 
-        cout << s4.toString() << endl; // BCDEFDEFGH
 
+        cout << s3.toString() << endl; // BCDEFDEFGH
+
+        cout << s3.getParTreeSize("") << endl;
+        cout << s3.getParTreeStringPreOrder("") << endl;
+        
+        cout << s3.getParTreeSize("r") << endl;
+        cout << s3.getParTreeStringPreOrder("r") << endl;
+        cout << s3.getParTreeSize("rl") << endl;
+        cout << s3.getParTreeStringPreOrder("rl") << endl;
+        cout << s3.getParTreeSize("lr") << endl;
+        cout << s3.getParTreeStringPreOrder("lr") << endl;
+
+        cout << s3.toString() << endl; // BCDEFDEFGH
+        
+        cout << s4.getParTreeSize("") << endl;
+        cout << s4.getParTreeStringPreOrder("") << endl;
+        
+        cout << s4.getParTreeSize("r") << endl;
+        cout << s4.getParTreeStringPreOrder("r") << endl;
+        
+        cout << s4.getParTreeSize("rl") << endl;
+        cout << s4.getParTreeStringPreOrder("rl") << endl;
+
+        
         cout << s5.toString() << endl; // IHGFEDFEDCBA
+        
+        cout << s5.getParTreeSize("") << endl;
+        cout << s5.getParTreeStringPreOrder("") << endl;
+        cout << s5.getParTreeSize("l") << endl;
+        cout << s5.getParTreeStringPreOrder("l") << endl;
 }
 void tc17(){
     CST sA("Hello"), sB(",_t"), sC("his_is"), sD("_an");
@@ -206,14 +254,16 @@ void tc17(){
     cout<<"s1 = "<<s1.toStringPreOrder()<<endl;
     cout<<"s2 = "<<s2.toStringPreOrder()<<endl;    
     cout<<"s3 = "<<s3.toStringPreOrder()<<endl;
+    cout<<"s3 = "<<s3.toString()<<endl;
     
     CST s4 = s3.subString(1,10);
     
     cout<<"s4 = "<<s4.toStringPreOrder()<<endl;
+    cout<<"s4 = "<<s4.toString()<<endl;
 
     CST s5 = s4.reverse();
     cout<<"s5 = "<<s5.toStringPreOrder()<<endl;
-
+    cout<<"s5 = "<<s5.toString()<<endl;
 }
 
 void tc18(){
@@ -250,6 +300,159 @@ void tc18(){
     cout<<"s7 = "<<s7.toString()<<endl; 
 
 }
+
+void tc20(){
+    ConcatStringTree *t1 = new ConcatStringTree("Doraemon,");
+    ConcatStringTree *t2 = new ConcatStringTree("Luke,");
+    ConcatStringTree *t3 = new ConcatStringTree("Jerry,");
+    ConcatStringTree *t4 = new ConcatStringTree("Than Don Dat Viet");
+
+    ConcatStringTree s1 = t1->concat(*t4).concat(*t3).concat(*t2);
+
+    delete t1;
+    delete t3;
+
+    cout << s1.getParTreeSize("llr") << endl;
+    cout << s1.getParTreeSize("lr") << endl;
+    cout << s1.getParTreeSize("lll") << endl;
+    try{cout << s1.getParTreeSize("rr") << endl;}catch(...){cout << "NULL catched!\n";}
+
+    cout << s1.getParTreeStringPreOrder("llr") << endl;
+    cout << s1.getParTreeStringPreOrder("lr") << endl;
+    cout << s1.getParTreeStringPreOrder("lll") << endl;
+    
+    delete t2;
+    delete t4;
+}
+
+void tc47() {
+    CST* s0 = new CST("0123456789");
+ 
+    int sum = 0;
+    for (int i = 9; i >= 0; i--) {
+        sum += s0->indexOf((char)'0' + i);
+    }
+    cout << "SUM = " << sum << endl;
+ 
+ 
+    for (int i = 9; i >= 0; i--) {
+        cout << s0->get(i);
+    }
+    cout << endl;
+    cout << endl;
+ 
+ 
+ 
+    CST* s2 = new CST
+    (s0->subString(0, 1).concat(
+        (s0->subString(1, 2).concat(
+            (s0->subString(2, 3).concat(
+                (s0->subString(3, 4).concat(
+                    (s0->subString(4, 5).concat(
+                        (s0->subString(5, 6).concat(
+                            (s0->subString(6, 7).concat(
+                                (s0->subString(7, 8).concat(
+                                    (s0->subString(8, 9).concat(
+                                        (s0->subString(9, 10)))
+                                        .subString(0, 2)))
+                                    .subString(0, 3)))
+                                .subString(0, 4)))
+                            .subString(0, 5)))
+                        .subString(0, 6)))
+                    .subString(0, 7)))
+                .subString(0, 8)))
+            .subString(0, 9)))
+        .subString(0, 10));
+ 
+    //Literally s0 == s2 = "0123456789" but take extra effort for no reason
+    cout << "s2: " << s2->toString() << endl;
+    cout << "s2: " << s2->toStringPreOrder()<<endl;
+
+    sum = 0;
+    for (int i = 9; i >= 0; i--) {
+        sum += s2->indexOf((char)'0' + i);
+    }
+    cout << "SUM = " << sum << endl;
+ 
+ 
+    for (int i = 9; i >= 0; i--) {
+        cout << s2->get(i);
+    }
+ 
+    cout << endl;
+    cout << "AT 10th index" << s2->indexOf(10) << endl;
+ 
+ 
+    cout << endl;
+    CST* s3 = new CST(s2->reverse());
+    cout << "s3: " << s3->toString() << endl;
+    cout << "s3: " <<s3->toStringPreOrder()<<endl;
+    sum = 0;
+    for (int i = 9; i >= 0; i--) {
+        sum += s3->indexOf((char)'0' + i);
+    }
+    cout << "SUM = " << sum << endl;
+ 
+ 
+    for (int i = 9; i >= 0; i--) {
+        cout << s3->get(i);
+    }
+ 
+    cout << endl;
+    
+    cout << endl;
+    CST* s4 = new CST(s2->subString(0,s2->length()));
+    cout << "s4: " << s4->toString() << endl;
+    cout << "s4: " <<s4->toStringPreOrder()<<endl;
+    sum = 0;
+    for (int i = 9; i >= 0; i--) {
+        sum += s4->indexOf((char)'0' + i);
+    }
+    cout << "SUM = " << sum << endl;
+ 
+ 
+    for (int i = 9; i >= 0; i--) {
+        cout << s3->get(i);
+    }
+ 
+    delete s4;
+    delete s3;
+    delete s2;
+    delete s0;
+    //_CrtDumpMemoryLeaks();
+}
+
+void tc164(){
+    //self concat
+    CST s0("Hello");
+    CST s1 = s0.concat(s0);
+    
+    cout<<"s1 = "<<s1.toStringPreOrder()<<endl;
+    cout<<"s1 = "<<s1.toString()<<endl;
+    
+
+    CST s2 = s0.concat(s0);
+    cout<<"s2 = "<<s2.toStringPreOrder()<<endl;
+    cout<<"s2 = "<<s2.toString()<<endl; 
+    
+    
+    CST s3 = s1.concat(s0);
+    cout<<"s3 = "<<s3.toStringPreOrder()<<endl;
+    cout<<"s3 = "<<s3.toString()<<endl; 
+
+    
+    CST s4 = s3.concat(s3);
+    cout<<"s4 = "<<s4.toStringPreOrder()<<endl;
+    cout<<"s4 = "<<s4.toString()<<endl; 
+
+
+
+    CST s5 = s4.reverse();
+    cout<<"s5 = "<<s5.toStringPreOrder()<<endl;
+    cout<<"s5 = "<<s5.toString()<<endl; 
+
+}
+
 
 void tc165(){
     //self concat
@@ -373,6 +576,6 @@ void tc166(){
 }
 
 int main() {
-    tc15();
+    tc20();
     return 0;
 }

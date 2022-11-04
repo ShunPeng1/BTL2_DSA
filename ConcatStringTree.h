@@ -23,11 +23,14 @@ public:
 
 class ParentsTree
 {
-private:
-    
 public:
     PTNode * root;
-    int size = 0 ;
+    int sizeOfNode = 0;
+
+    int size() const;
+    string toStringPreOrder() const;
+
+    
     ParentsTree(){
         root = nullptr;
     }
@@ -120,7 +123,8 @@ public:
     PTNode* insert(PTNode *r,PTNode* data){
         
         if(r==NULL){
-            size++;
+            if(root == NULL) root = data; 
+            sizeOfNode++;
             return data;             
         }
         else{
@@ -151,14 +155,14 @@ public:
 
     PTNode * deleteNode(PTNode *p, int dataId){
 
-        if(p->left == NULL && p->right == NULL){
+        if((p->left == NULL && p->right == NULL) || dataId == p->id){
                 if(p==this->root)
                     this->root = NULL;
-            delete p;
+            sizeOfNode--;
+            //delete p;
             return NULL;
         }
 
-        PTNode *t;
         PTNode *q;
         if(p->id < dataId){
             p->right = deleteNode(p->right,dataId);
@@ -192,6 +196,19 @@ public:
         return p;
     }
 
+    bool findNode(PTNode *p, PTNode *data){
+        if(p == nullptr) return false;
+
+        if(p->id == data->id) return true;
+        if(p->id < data->id){
+            return findNode(p->right,data);
+        }
+         
+        return findNode(p->left,data);
+        
+    }
+
+
     PTNode* inpre(PTNode* p){
         while(p->right!=NULL)
             p = p->right;
@@ -219,7 +236,9 @@ struct CSTNode{
     CSTNode *left; 
     CSTNode *right;
 
+    PTNode *myPTNode;
     class ParentsTree parent;
+    class ParentsTree ancestor;
     CSTNode(int,int,string, CSTNode *, CSTNode * );
 };
 
@@ -242,11 +261,11 @@ public:
     ConcatStringTree subString(int from, int to) const;
     ConcatStringTree reverse() const;
 
-    //int getParTreeSize(const string & query) const;
-    //string getParTreeStringPreOrder(const string & query) const;
+    int getParTreeSize(const string & query) const;
+    string getParTreeStringPreOrder(const string & query) const;
 };
 
-/*
+
 class ReducedConcatStringTree; // forward declaration
 
 class HashConfig {
@@ -273,7 +292,7 @@ public:
 public:
     static LitStringHash litStringHash;
 };
-*/
+
 
 template <class T> 
 CSTNode* searchNode(CSTNode* root, T& key, bool (*acceptFunc) (CSTNode*, T&) , bool (*branchRightFunc)(CSTNode*,T&))
@@ -287,8 +306,25 @@ CSTNode* searchNode(CSTNode* root, T& key, bool (*acceptFunc) (CSTNode*, T&) , b
     return searchNode(root->left, key, acceptFunc, branchRightFunc);
 }
 
+
+
 template <class T> 
 void preorder(CSTNode* node, T &result, void (*executeFunc) (CSTNode *, T &) )
+{
+    if (node == NULL)
+        return;
+
+    executeFunc(node , result);
+ 
+    /* then recur on left subtree */
+    preorder(node->left, result, executeFunc);
+    
+    /* now recur on right subtree */
+    preorder(node->right, result, executeFunc);
+}
+
+template <class T> 
+void preorder(PTNode* node, T &result, void (*executeFunc) (PTNode *, T &) )
 {
     if (node == NULL)
         return;
@@ -317,5 +353,7 @@ CSTNode* postorder(CSTNode* node, T &result, CSTNode* (*executeFunc) (CSTNode *,
     
     return executeFunc(node, result, left, right);
 }
+
+
 
 #endif // __CONCAT_STRING_TREE_H__

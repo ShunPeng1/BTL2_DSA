@@ -50,6 +50,24 @@ public:
 
     }
 
+        int calheight(PTNode *p){
+
+            if(p->left && p->right){
+            if (p->left->height < p->right->height)
+                return p->right->height + 1;
+            else return  p->left->height + 1;
+            }
+            else if(p->left && p->right == NULL){
+               return p->left->height + 1;
+            }
+            else if(p->left ==NULL && p->right){
+               return p->right->height + 1;
+            }
+            return 0;
+
+    }
+
+
     int balanceFactor(PTNode *n){
             if(n->left && n->right){
                 return n->left->height - n->right->height; 
@@ -71,7 +89,7 @@ public:
 
         p->left = tp->right;
         tp->right = p;
-
+        if(p == root) root = tp; 
         return tp; 
     }
 
@@ -83,7 +101,7 @@ public:
 
         p->right = tp->left;
         tp->left = p;
-
+        if(p == root) root = tp; 
         return tp; 
     }
 
@@ -99,7 +117,7 @@ public:
         tp ->left = tp2->right;
         tp2 ->left = p;
         tp2->right = tp; 
-        
+        if(p == root) root = tp2; 
         return tp2; 
     }
 
@@ -116,6 +134,7 @@ public:
         tp2 ->right = p;
         tp2->left = tp; 
         
+        if(p == root) root = tp2; 
         return tp2; 
     }
 

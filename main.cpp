@@ -263,15 +263,52 @@ void tc15(){
         
         ConcatStringTree *s5 = new CST (s3->reverse());
 
+        
+        delete s1;
+        cout<<"\ndelete s1 \n";
+        cout << s3->getParTreeSize("l") << endl;
+        cout << s3->getParTreeStringPreOrder("l") << endl;
+        
+        delete s2;
+        cout<<"\ndelete s2 \n";
+        cout << s3->getParTreeSize("r") << endl;
+        cout << s3->getParTreeStringPreOrder("r") << endl;
+
+        delete sA;
+        cout<<"\ndelete sA \n";
+        cout << s3->getParTreeSize("ll") << endl;
+        cout << s3->getParTreeStringPreOrder("ll") << endl;
+
+        delete sC;
+        cout<<"\ndelete sC \n";
+        cout << s3->getParTreeSize("rr") << endl;
+        cout << s3->getParTreeStringPreOrder("rr") << endl;        
+        
+        cout << s3->getParTreeSize("") << endl;
+        cout << s3->getParTreeStringPreOrder("") << endl; 
+        cout << s3->getParTreeSize("l") << endl;
+        cout << s3->getParTreeStringPreOrder("l") << endl;
+        cout << s3->getParTreeSize("r") << endl;
+        cout << s3->getParTreeStringPreOrder("r") << endl;
+        cout << s3->getParTreeSize("rl") << endl;
+        cout << s3->getParTreeStringPreOrder("rl") << endl;
+        cout << s3->getParTreeSize("lr") << endl;
+        cout << s3->getParTreeStringPreOrder("lr") << endl;
+        cout << s3->getParTreeSize("ll") << endl;
+        cout << s3->getParTreeStringPreOrder("ll") << endl;
+        cout << s3->getParTreeSize("rr") << endl;
+        cout << s3->getParTreeStringPreOrder("rr") << endl;
+        
+        delete sB;
+        cout<<"\ndelete sB \n";
+        cout << s3->getParTreeSize("lr") << endl;
+        cout << s3->getParTreeStringPreOrder("lr") << endl;
+
+        delete s3;
+        cout<<"delete s3 \n";
+        
         delete s4;
         delete s5;
-        delete sA;
-        delete sB;
-        delete sC;
-        delete s1;
-        delete s2;
-        delete s3;
-        
 }
 
 void tc17(){
@@ -670,6 +707,15 @@ void tc166(){
 }
 
 int main() {
-    tc15();
+    tc14();
+    tc164();
+    tc165();
+    tc166();
+    tc17();
+    tc18();
+    tc20();
+    tc22();
+    tc23();
+    tc24();
     return 0;
 }

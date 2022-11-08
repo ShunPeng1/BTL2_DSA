@@ -86,8 +86,9 @@ CST::CST(const char * s){
 
     CSTNode* cstnode = new CSTNode(0, tp.size(), tp, nullptr, nullptr);
     PTNode * ptnode  = new PTNode(cstnode,0,0, nullptr, nullptr);
+    ptnode->newID();
     cstnode->parent.insert(cstnode->parent.root, ptnode);
-    cstnode->parent.numElement++;
+    
     root = cstnode;
 
     isShallowNorDeep = false;
@@ -97,13 +98,11 @@ CST::CST(const char * s){
 
 CST::~CST(){
     if(isTemporary) return;
-
-
     
     struct TempStruct{   
         int target;
         static void ancestorFunc(CSTNode * root, TempStruct &result){
-            if(!root->ancestor.findPTNode(root->ancestor.root, result.target))
+            if(root->ancestor.findPTNode(root->ancestor.root, result.target))
                 root->ancestor.deleteNode(root->ancestor.root, result.target);
 
         }  
@@ -115,7 +114,7 @@ CST::~CST(){
     TempStruct obj{deletingId};
     CSTNode * left = this->root->left , *right = this->root->right;
     if(left){
-        if(!left->parent.findPTNode(left->parent.root, deletingId)) 
+        if(left->parent.findPTNode(left->parent.root, deletingId)) 
             left->parent.deleteNode(left->parent.root, deletingId);
 
         preorder(left->left, obj, TempStruct::ancestorFunc);
@@ -124,14 +123,14 @@ CST::~CST(){
 
     if(right){
         
-        if(!right->parent.findPTNode(right->parent.root,deletingId)) 
+        if(right->parent.findPTNode(right->parent.root, deletingId)) 
             right->parent.deleteNode(right->parent.root, deletingId);
         
         preorder(right->left, obj, TempStruct::ancestorFunc);
         preorder(right->right, obj, TempStruct::ancestorFunc);
     }
 
-    if(root->ancestor.size()+ root->parent.size() == 0){
+    if(root->ancestor.size() + root->parent.size() == 0){
         delete root;
         root = nullptr;
     }
@@ -396,8 +395,8 @@ void CST::createParentAndChildAncestor(CST &cstObj) const{
         PTNode *target;
         static void ancestorFunc(CSTNode * root, TempStruct &result){
             if(!root->ancestor.findPTNode(root->ancestor.root,result.target->id)){
-                PTNode *leftNode = new PTNode(result.target->data, result.target->id,0,nullptr,nullptr);
-                root->ancestor.insert(root->ancestor.root,result.target);
+                PTNode *ptnode = new PTNode(result.target->data, result.target->id,0,nullptr,nullptr);
+                root->ancestor.insert(root->ancestor.root,ptnode);
             } 
         }  
     };

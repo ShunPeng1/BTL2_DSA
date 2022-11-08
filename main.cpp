@@ -107,40 +107,56 @@ void tc6(){
     cout << s3.reverse().toString() << endl;
 }
 
+
 void tc11(){
     
-    CST s1("Hello"), s2("World");
-    cout<<s1.get(0)<<endl;
-    cout<<s1.get(1)<<endl;
-    cout<<s1.get(2)<<endl;
-    cout<<s1.get(3)<<endl;
-    cout<<s1.get(4)<<endl;
-    cout<<s1.indexOf('H')<<endl;
-    cout<<s1.indexOf('e')<<endl;
-    cout<<s1.indexOf('l')<<endl;
-    cout<<s1.indexOf('l')<<endl;
-    cout<<s1.indexOf('o')<<endl;
-    cout<<s1.indexOf('a')<<endl;
-    cout<<s1.toStringPreOrder()<<endl;
-    cout<<s1.toString()<<endl;
+    CST *s1 = new CST("Hello"), *s2 = new CST("World");
+    cout<<s1->get(0)<<endl;
+    cout<<s1->get(1)<<endl;
+    cout<<s1->get(2)<<endl;
+    cout<<s1->get(3)<<endl;
+    cout<<s1->get(4)<<endl;
+    cout<<s1->indexOf('H')<<endl;
+    cout<<s1->indexOf('e')<<endl;
+    cout<<s1->indexOf('l')<<endl;
+    cout<<s1->indexOf('l')<<endl;
+    cout<<s1->indexOf('o')<<endl;
+    cout<<s1->indexOf('a')<<endl;
+    cout<<s1->toStringPreOrder()<<endl;
+    cout<<s1->toString()<<endl;
 
-    CST s3 = s1.concat(s2);
+    CST *s3 = new CST( s1->concat(*s2));
     cout<<endl<<endl;
-    cout<<s3.get(5)<<endl;
-    cout<<s3.get(6)<<endl;
-    cout<<s3.get(7)<<endl;
-    cout<<s3.get(8)<<endl;
-    cout<<s3.get(9)<<endl;
-    cout<<s3.indexOf('W')<<endl;
-    cout<<s3.indexOf('o')<<endl;
-    cout<<s3.indexOf('r')<<endl;
-    cout<<s3.indexOf('l')<<endl;
-    cout<<s3.indexOf('d')<<endl;
-    cout<<s3.indexOf('a')<<endl;
-    cout<<s3.toStringPreOrder()<<endl;
-    cout<<s3.toString()<<endl;
+    cout<<s3->get(5)<<endl;
+    cout<<s3->get(6)<<endl;
+    cout<<s3->get(7)<<endl;
+    cout<<s3->get(8)<<endl;
+    cout<<s3->get(9)<<endl;
+    cout<<s3->indexOf('W')<<endl;
+    cout<<s3->indexOf('o')<<endl;
+    cout<<s3->indexOf('r')<<endl;
+    cout<<s3->indexOf('l')<<endl;
+    cout<<s3->indexOf('d')<<endl;
+    cout<<s3->indexOf('a')<<endl;
+    cout<<s3->toStringPreOrder()<<endl;
+    cout<<s3->toString()<<endl;
 
+    cout<<s3->getParTreeSize("")<<endl;
+    cout<<s3->getParTreeStringPreOrder("")<<endl;
+    cout<<s3->getParTreeSize("l")<<endl;
+    cout<<s3->getParTreeStringPreOrder("l")<<endl;
     cout<<endl<<endl;
+
+    delete s1;
+    
+    cout<<s3->getParTreeSize("")<<endl;
+    cout<<s3->getParTreeStringPreOrder("")<<endl;
+    cout<<s3->getParTreeSize("l")<<endl;
+    cout<<s3->getParTreeStringPreOrder("l")<<endl;
+    delete s2;
+    delete s3;
+    
+    
 
 }
 void tc12(){
@@ -192,60 +208,72 @@ void tc12(){
 void tc14(){
     ConcatStringTree s1("Hello");
         ConcatStringTree s2 = s1.concat(s1).concat(s1);
+        cout << s2.toStringPreOrder()<<endl;   
+        cout<<s2.getParTreeSize("")<<endl;
+        cout<<s2.getParTreeStringPreOrder("")<<endl;
+        cout<<s2.getParTreeSize("ll")<<endl;
+        cout<<s2.getParTreeStringPreOrder("ll")<<endl;
+
         ConcatStringTree s3 = s1.concat(s2).subString(0, s2.length());
         cout << s3.toStringPreOrder()<<endl;
+            
+        cout<<s3.getParTreeSize("")<<endl;
+        cout<<s3.getParTreeStringPreOrder("")<<endl;
+        cout<<s3.getParTreeSize("l")<<endl;
+        cout<<s3.getParTreeStringPreOrder("l")<<endl;
         
         ConcatStringTree s4 = s3.reverse();
         cout << s4.toStringPreOrder()<<endl;
+        
+    cout<<s4.getParTreeSize("")<<endl;
+    cout<<s4.getParTreeStringPreOrder("")<<endl;
+    cout<<s4.getParTreeSize("l")<<endl;
+    cout<<s4.getParTreeStringPreOrder("l")<<endl;
         cout << "\n";
 }
 
 void tc15(){
-        ConcatStringTree sA("ABC"), sB("DEF"), sC("GHI");
+        ConcatStringTree *sA = new CST("ABC"), *sB = new CST("DEF"), *sC = new CST("GHI");
 
-        ConcatStringTree s1 = sA.concat(sB); // ABCDEF
+        ConcatStringTree *s1 = new CST( sA->concat(*sB)); // ABCDEF
 
-        ConcatStringTree s2 = sB.concat(sC); // DEFGHI
+        ConcatStringTree *s2 = new CST (sB->concat(*sC)); // DEFGHI
 
-        ConcatStringTree s3 = s1.concat(s2); // ABCDEFDEFGHI
+        ConcatStringTree *s3 = new CST (s1->concat(*s2)); // ABCDEFDEFGHI
 
-        ConcatStringTree s4 = s3.subString(1, s3.length()-1);
+
+        cout << s3->toString() << endl; // BCDEFDEFGH
+
+        cout << s3->getParTreeSize("") << endl;
+        cout << s3->getParTreeStringPreOrder("") << endl; 
+        cout << s3->getParTreeSize("l") << endl;
+        cout << s3->getParTreeStringPreOrder("l") << endl;
+        cout << s3->getParTreeSize("r") << endl;
+        cout << s3->getParTreeStringPreOrder("r") << endl;
+        cout << s3->getParTreeSize("rl") << endl;
+        cout << s3->getParTreeStringPreOrder("rl") << endl;
+        cout << s3->getParTreeSize("lr") << endl;
+        cout << s3->getParTreeStringPreOrder("lr") << endl;
+        cout << s3->getParTreeSize("ll") << endl;
+        cout << s3->getParTreeStringPreOrder("ll") << endl;
+        cout << s3->getParTreeSize("rr") << endl;
+        cout << s3->getParTreeStringPreOrder("rr") << endl;
         
-
-        ConcatStringTree s5 = s3.reverse();
-
-
-        cout << s3.toString() << endl; // BCDEFDEFGH
-
-        cout << s3.getParTreeSize("") << endl;
-        cout << s3.getParTreeStringPreOrder("") << endl;
+        ConcatStringTree *s4 = new CST (s3->subString(1, s3->length()-1));
         
-        cout << s3.getParTreeSize("r") << endl;
-        cout << s3.getParTreeStringPreOrder("r") << endl;
-        cout << s3.getParTreeSize("rl") << endl;
-        cout << s3.getParTreeStringPreOrder("rl") << endl;
-        cout << s3.getParTreeSize("lr") << endl;
-        cout << s3.getParTreeStringPreOrder("lr") << endl;
+        ConcatStringTree *s5 = new CST (s3->reverse());
 
-        cout << s3.toString() << endl; // BCDEFDEFGH
+        delete s4;
+        delete s5;
+        delete sA;
+        delete sB;
+        delete sC;
+        delete s1;
+        delete s2;
+        delete s3;
         
-        cout << s4.getParTreeSize("") << endl;
-        cout << s4.getParTreeStringPreOrder("") << endl;
-        
-        cout << s4.getParTreeSize("r") << endl;
-        cout << s4.getParTreeStringPreOrder("r") << endl;
-        
-        cout << s4.getParTreeSize("rl") << endl;
-        cout << s4.getParTreeStringPreOrder("rl") << endl;
-
-        
-        cout << s5.toString() << endl; // IHGFEDFEDCBA
-        
-        cout << s5.getParTreeSize("") << endl;
-        cout << s5.getParTreeStringPreOrder("") << endl;
-        cout << s5.getParTreeSize("l") << endl;
-        cout << s5.getParTreeStringPreOrder("l") << endl;
 }
+
 void tc17(){
     CST sA("Hello"), sB(",_t"), sC("his_is"), sD("_an");
     CST s1 = sA.concat(sB), s2 = sC.concat(sD), s3 = s1.concat(s2);
@@ -324,6 +352,72 @@ void tc20(){
     delete t2;
     delete t4;
 }
+
+void tc22()
+{
+    ConcatStringTree *t1 = new ConcatStringTree("Doraemon,");
+    ConcatStringTree *t2 = new ConcatStringTree("Luke,");
+    ConcatStringTree *t3 = new ConcatStringTree("Jerry,");
+    ConcatStringTree *t4 = new ConcatStringTree("Than Don Dat Viet");
+
+    ConcatStringTree s1 = t4->concat(*t2).concat(*t1).concat(*t3);
+    delete t1;
+    delete t2;
+    delete t3;
+    delete t4;
+
+    ConcatStringTree s2 = s1.subString(1,7).concat(s1.subString(6,9)).reverse().reverse();
+
+    cout << s2.toStringPreOrder() << endl;
+    cout << s2.toString() << endl;
+}
+
+void tc23()
+{
+    ConcatStringTree *t1 = new ConcatStringTree("Doraemon,");
+    ConcatStringTree *t2 = new ConcatStringTree("Luke,");
+    ConcatStringTree *t3 = new ConcatStringTree("Jerry,");
+    ConcatStringTree *t4 = new ConcatStringTree("Than Don Dat Viet");
+
+    ConcatStringTree s1 = t1->concat(*t4).concat(*t3).concat(*t2);
+
+    delete t1;
+    delete t3;
+
+    cout << s1.getParTreeSize("llr") << endl;
+    cout << s1.getParTreeSize("lr") << endl;
+    cout << s1.getParTreeSize("lll") << endl;
+    try{cout << s1.getParTreeSize("rr") << endl;}catch(...){cout << "NULL catched!\n";}
+
+    cout << s1.getParTreeStringPreOrder("llr") << endl;
+    cout << s1.getParTreeStringPreOrder("lr") << endl;
+    cout << s1.getParTreeStringPreOrder("lll") << endl;
+    
+    delete t2;
+    delete t4;
+}
+
+void tc24()
+{
+    // Example in the spec
+    ConcatStringTree *t1 = new ConcatStringTree("Hello");
+    ConcatStringTree *t2 = new ConcatStringTree(",_t");
+    ConcatStringTree *t3 = new ConcatStringTree("his_is");
+    ConcatStringTree *t4 = new ConcatStringTree("_an");
+
+    ConcatStringTree s1 = t1->concat(*t2);
+    ConcatStringTree s2 = t3->concat(*t4);
+
+    delete t1;
+    delete t2;
+    delete t3;
+    delete t4;
+
+    ConcatStringTree s3 = s1.concat(s2).subString(1,8);
+
+    cout << s3.toStringPreOrder() << endl;
+}
+
 
 void tc47() {
     CST* s0 = new CST("0123456789");
@@ -576,6 +670,6 @@ void tc166(){
 }
 
 int main() {
-    tc20();
+    tc15();
     return 0;
 }

@@ -63,11 +63,6 @@ CST::CST(const CST&& otherS) {
 
             return cstnode;
         }
-        static void ancestorFunc(CSTNode * root, TempStruct &result){
-            
-            if(!root->ancestor.findNode(root->ancestor.root,result.target))
-                root->ancestor.insert(root->ancestor.root,result.target); 
-        }  
     };
 
     
@@ -75,33 +70,9 @@ CST::CST(const CST&& otherS) {
     //BUG
     TempStruct obj;
     this->root = postorder(otherS.root, obj, TempStruct::executeFunc);
-
-    PTNode *ptnode = new PTNode(this->root,0,nullptr,nullptr);
-    obj.target = ptnode;
-
-    this->root->parent.insert(this->root->parent.root, ptnode);
-    
-    CSTNode * left = this->root->left , *right = this->root->right;
-    if(left){
-       if(!left->parent.findNode(left->parent.root, ptnode)) 
-            left->parent.insert(left->parent.root, ptnode);
-
-        preorder(left->left, obj, TempStruct::ancestorFunc);
-        preorder(left->right, obj, TempStruct::ancestorFunc);
-    }
-
-    if(right){
-        
-        if(!right->parent.findNode(right->parent.root,ptnode)) 
-            right->parent.insert(right->parent.root, ptnode);
-        
-        preorder(right->left, obj, TempStruct::ancestorFunc);
-        preorder(right->right, obj, TempStruct::ancestorFunc);
-    }
-
     delete otherS.root;
 
-    
+    createParentAndChildAncestor(*this);    
     
 }
 
@@ -113,10 +84,11 @@ CST::CST(const char * s){
         i++;
     }
 
-    CSTNode* tpCSTN = new CSTNode(0, tp.size(), tp, nullptr, nullptr);
-    tpCSTN->parent.root = new PTNode(tpCSTN,0, nullptr, nullptr);
-    tpCSTN->parent.sizeOfNode++;
-    root = tpCSTN;
+    CSTNode* cstnode = new CSTNode(0, tp.size(), tp, nullptr, nullptr);
+    PTNode * ptnode  = new PTNode(cstnode,0,0, nullptr, nullptr);
+    cstnode->parent.insert(cstnode->parent.root, ptnode);
+    cstnode->parent.numElement++;
+    root = cstnode;
 
     isShallowNorDeep = false;
     isTemporary = false;
@@ -129,38 +101,39 @@ CST::~CST(){
 
     
     struct TempStruct{   
-        PTNode *target;
-        static void executeFunc(CSTNode * root, TempStruct &result){
-            if(!root->ancestor.findNode(root->ancestor.root,result.target))
-                
-                root->ancestor.deleteNode(root->ancestor.root, result.target->id);
+        int target;
+        static void ancestorFunc(CSTNode * root, TempStruct &result){
+            if(!root->ancestor.findPTNode(root->ancestor.root, result.target))
+                root->ancestor.deleteNode(root->ancestor.root, result.target);
+
         }  
     };
     
-    PTNode * deletingPTNode = root->myPTNode;
-    root->parent.deleteNode(root->parent.root, deletingPTNode->id);
+    int  deletingId = root->myId;
+    root->parent.deleteNode(root->parent.root, deletingId);
     
-    TempStruct obj{deletingPTNode};
+    TempStruct obj{deletingId};
     CSTNode * left = this->root->left , *right = this->root->right;
     if(left){
-        if(!left->parent.findNode(left->parent.root, deletingPTNode)) 
-            left->parent.deleteNode(left->parent.root, deletingPTNode->id);
+        if(!left->parent.findPTNode(left->parent.root, deletingId)) 
+            left->parent.deleteNode(left->parent.root, deletingId);
 
-        preorder(left->left, obj, TempStruct::executeFunc);
-        preorder(left->right, obj, TempStruct::executeFunc);
+        preorder(left->left, obj, TempStruct::ancestorFunc);
+        preorder(left->right, obj, TempStruct::ancestorFunc);
     }
 
     if(right){
         
-        if(!right->parent.findNode(right->parent.root,deletingPTNode)) 
-            right->parent.deleteNode(right->parent.root, deletingPTNode->id);
+        if(!right->parent.findPTNode(right->parent.root,deletingId)) 
+            right->parent.deleteNode(right->parent.root, deletingId);
         
-        preorder(right->left, obj, TempStruct::executeFunc);
-        preorder(right->right, obj, TempStruct::executeFunc);
+        preorder(right->left, obj, TempStruct::ancestorFunc);
+        preorder(right->right, obj, TempStruct::ancestorFunc);
     }
 
     if(root->ancestor.size()+ root->parent.size() == 0){
         delete root;
+        root = nullptr;
     }
 }
 
@@ -268,37 +241,7 @@ ConcatStringTree CST::concat(const ConcatStringTree & otherS) const{
     CST result(cstnode, true, true);
 
     //parentTree
-    
-    struct TempStruct{   
-        PTNode *target;
-        static void executeFunc(CSTNode * root, TempStruct &result){
-            if(!root->ancestor.findNode(root->ancestor.root,result.target))
-                root->ancestor.insert(root->ancestor.root,result.target); 
-        }  
-    };
-    
-    PTNode *ptnode = new PTNode(result.root,0,nullptr,nullptr);
-    TempStruct obj{ptnode};
-
-    result.root->parent.insert(result.root->parent.root, ptnode);
-    
-    CSTNode * left = result.root->left , *right = result.root->right;
-    if(left){
-        if(!left->parent.findNode(left->parent.root, ptnode)) 
-            left->parent.insert(left->parent.root, ptnode);
-
-        preorder(left->left, obj, TempStruct::executeFunc);
-        preorder(left->right, obj, TempStruct::executeFunc);
-    }
-
-    if(right){
-        
-        if(!right->parent.findNode(right->parent.root,ptnode)) 
-            right->parent.insert(right->parent.root, ptnode);
-        
-        preorder(right->left, obj, TempStruct::executeFunc);
-        preorder(right->right, obj, TempStruct::executeFunc);
-    }
+    this->createParentAndChildAncestor(result);
     return (CST&&)result;
 }
 
@@ -428,6 +371,7 @@ int CST::getParTreeSize(const string & query) const{
     }
     return roam->parent.size();
 }
+
 string CST::getParTreeStringPreOrder(const string & query) const{
     CSTNode *roam = this->root;
     FOR(i,0,query.size()){
@@ -446,23 +390,69 @@ string CST::getParTreeStringPreOrder(const string & query) const{
     return roam->parent.toStringPreOrder();
 }
 
+void CST::createParentAndChildAncestor(CST &cstObj) const{
+    
+    struct TempStruct{   
+        PTNode *target;
+        static void ancestorFunc(CSTNode * root, TempStruct &result){
+            if(!root->ancestor.findPTNode(root->ancestor.root,result.target->id)){
+                PTNode *leftNode = new PTNode(result.target->data, result.target->id,0,nullptr,nullptr);
+                root->ancestor.insert(root->ancestor.root,result.target);
+            } 
+        }  
+    };
+    
+    PTNode *ptnode = new PTNode(cstObj.root, 0,0,nullptr,nullptr);
+    ptnode->newID();
+
+    TempStruct obj{ptnode};
+
+    cstObj.root->parent.insert(cstObj.root->parent.root, ptnode);
+    
+    CSTNode * left = cstObj.root->left , *right = cstObj.root->right;
+    if(left){
+        if(!left->parent.findPTNode(left->parent.root, ptnode->id)) {
+            
+            PTNode *leftNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
+            left->parent.insert(left->parent.root, leftNode);
+        }
+
+        preorder(left->left, obj, TempStruct::ancestorFunc);
+        preorder(left->right, obj, TempStruct::ancestorFunc);
+    }
+
+    if(right){
+        
+        if(!right->parent.findPTNode(right->parent.root,ptnode->id)){
+            PTNode *rightNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
+            right->parent.insert(right->parent.root, rightNode);
+        } 
+        
+        preorder(right->left, obj, TempStruct::ancestorFunc);
+        preorder(right->right, obj, TempStruct::ancestorFunc);
+    }
+}
+
 // PTNode SECTION
 int PTNode::maxId = 0;
-PTNode::PTNode( CSTNode* _data = nullptr, int _height = 0, PTNode * _left = nullptr, PTNode* _right = nullptr):
-    data(_data), height(_height), left(_left), right(_right)
+PTNode::PTNode( CSTNode* _data = nullptr, int _id = 0, int _height = 0, PTNode * _left = nullptr, PTNode* _right = nullptr):
+    data(_data), id(_id), height(_height), left(_left), right(_right)
 {
+}
+
+void PTNode::newID(){
     maxId++;
     if(maxId>= 10000000){
         throw overflow_error("Id is overflow!");
     }
-    id = maxId;
-
-    data->myPTNode = this;
+    id = maxId; 
+    this->data->myId = id;
 }
+
 
 //ParentTree Section
 int PT::size() const{
-    return sizeOfNode;
+    return numElement;
 }
 
 string PT::toStringPreOrder() const{

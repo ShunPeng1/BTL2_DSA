@@ -5,7 +5,6 @@
 
 struct CSTNode;
 
-
 class PTNode {
 public:   
     static int maxId;
@@ -17,15 +16,15 @@ public:
     CSTNode* data;
     int height;
 
-    PTNode( CSTNode*, int , PTNode *, PTNode*);
+    PTNode( CSTNode*, int, int, PTNode *, PTNode*);
+    void newID();
 };
-
 
 class ParentsTree
 {
 public:
     PTNode * root;
-    int sizeOfNode = 0;
+    int numElement = 0;
 
     int size() const;
     string toStringPreOrder() const;
@@ -124,7 +123,9 @@ public:
         
         if(r==NULL){
             if(root == NULL) root = data; 
-            sizeOfNode++;
+
+            data->height = 1;
+            numElement++;
             return data;             
         }
         else{
@@ -155,11 +156,11 @@ public:
 
     PTNode * deleteNode(PTNode *p, int dataId){
 
-        if((p->left == NULL && p->right == NULL) || dataId == p->id){
+        if((p->left == NULL && p->right == NULL) ){
                 if(p==this->root)
                     this->root = NULL;
-            sizeOfNode--;
-            //delete p;
+            numElement--;
+            delete p;
             return NULL;
         }
 
@@ -196,15 +197,15 @@ public:
         return p;
     }
 
-    bool findNode(PTNode *p, PTNode *data){
+    bool findPTNode(PTNode *p, int &findingId){
         if(p == nullptr) return false;
 
-        if(p->id == data->id) return true;
-        if(p->id < data->id){
-            return findNode(p->right,data);
+        if(p->id == findingId) return true;
+        if(p->id < findingId){
+            return findPTNode(p->right,findingId);
         }
          
-        return findNode(p->left,data);
+        return findPTNode(p->left,findingId);
         
     }
 
@@ -227,6 +228,80 @@ public:
     }
 };
 
+/*
+struct ALNode{
+    PTNode *data;
+    ALNode *next;    
+
+    ALNode(PTNode *_data = nullptr, ALNode *_next = nullptr):
+        data(_data), next(_next)
+    {
+
+    }
+
+};
+
+class AncestorList{
+    ALNode *head;
+    int numElement;
+
+public:
+    AncestorList(){
+        head = nullptr;
+        numElement = 0;
+    }
+    ~AncestorList(){}
+
+    void addFront(PTNode* item){
+        ALNode *node = new ALNode(item,nullptr);
+        numElement++;
+        if(head == nullptr){
+            head = node;
+            return;
+        }
+        node->next = head;
+        head = node;
+    }
+
+    void removeItem(PTNode* item){
+        if(head == nullptr) return;
+        if(head->data == item){
+            ALNode *temp = head;
+            head = head->next;
+            delete temp;
+            numElement--;
+            return ;
+        }
+
+        ALNode *roam = head;
+        while(roam->next){
+            if(roam->next->data->id == item->id) {
+                ALNode *temp = roam->next;
+                roam->next = roam->next->next;
+                delete temp;
+                numElement--;
+                return;
+            }
+            roam = roam->next;
+        }
+    }
+
+    bool findPTNode(PTNode *node){
+        ALNode *roam = head;
+        while(roam){
+            if(roam->data->id == node->id){
+                return true;
+            }
+            roam = roam->next;
+        }   
+        return false;
+    }
+    
+    int size(){
+        return numElement;
+    }
+};
+*/
 
 struct CSTNode{
     int leftLength;
@@ -236,9 +311,11 @@ struct CSTNode{
     CSTNode *left; 
     CSTNode *right;
 
-    PTNode *myPTNode;
+    int myId;
     class ParentsTree parent;
+    //class AncestorList ancestor;
     class ParentsTree ancestor;
+    
     CSTNode(int,int,string, CSTNode *, CSTNode * );
 };
 
@@ -263,7 +340,11 @@ public:
 
     int getParTreeSize(const string & query) const;
     string getParTreeStringPreOrder(const string & query) const;
+
+    void createParentAndChildAncestor(ConcatStringTree&) const;
 };
+
+
 
 
 class ReducedConcatStringTree; // forward declaration
@@ -279,7 +360,7 @@ private:
     friend class ReducedConcatStringTree;
 };
 
-class ReducedConcatStringTree  {
+class ReducedConcatStringTree /* */ {
 
 public:
     class LitStringHash {
@@ -290,8 +371,10 @@ public:
     };
 
 public:
-    static LitStringHash litStringHash;
+    ReducedConcatStringTree(const char * s, LitStringHash * litStringHash);
+    LitStringHash * litStringHash;
 };
+
 
 
 template <class T> 

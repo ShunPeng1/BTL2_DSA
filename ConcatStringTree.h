@@ -364,8 +364,6 @@ public:
 };
 
 
-
-
 class ReducedConcatStringTree; // forward declaration
 
 class HashConfig {
@@ -379,19 +377,39 @@ private:
     friend class ReducedConcatStringTree;
 };
 
-class ReducedConcatStringTree /* */ {
+class ReducedConcatStringTree : public ConcatStringTree {
 
 public:
+    class LitString{
+    public:
+        CSTNode *data;
+        string s;
+        int reference;
+
+        LitString(CSTNode *,string, int);
+        ~LitString();
+    };
+
     class LitStringHash {
+        LitString **litHash;
+        HashConfig config;
+        int numOfElement = 0;
     public:
         LitStringHash(const HashConfig & hashConfig);
         int getLastInsertedIndex() const;
         string toString() const;
-    };
 
+        long long hashFunc(string);
+        void rehash();
+        CSTNode* insert(string);
+        int searchKey();
+        void remove();
+    };
+     
 public:
     ReducedConcatStringTree(const char * s, LitStringHash * litStringHash);
     LitStringHash * litStringHash;
+
 };
 
 

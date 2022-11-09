@@ -20,6 +20,9 @@ typedef long long ll;
 
 #define CST ConcatStringTree
 #define PT ParentsTree
+#define LS ReducedConcatStringTree::LitString
+#define LSH ReducedConcatStringTree::LitStringHash
+#define RCST ReducedConcatStringTree
 
 // CSTNode SECTION
 CSTNode::CSTNode(int _leftLength=0, int _length = 0, string _data = "", CSTNode *_left = nullptr, CSTNode *_right=nullptr ): 
@@ -481,3 +484,103 @@ string PT::toStringPreOrder() const{
     result+= "]";
     return result;
 }
+
+
+//LitString SECTION
+LS::LitString(CSTNode *_data,string _s , int _reference): data(_data),s(_s), reference(_reference)
+{
+
+}
+
+LS::~LitString(){
+    if(reference == 0) delete data;
+}
+
+//LitStringHash SECTION
+LSH::LitStringHash(const HashConfig &_config){
+    config = _config;
+    litHash = new LS*[config.initSize];
+    FOR(i,0,config.initSize){
+        litHash[i] = nullptr;
+    }
+}
+
+ll LSH::hashFunc(string s){
+    ll result = 0;
+    FOR(i,0,s.size()){
+        result+= (ll)s[i]*(ll)config.p;
+    }
+    result = result% ((ll)config.initSize);
+    return (int) result;
+}
+
+void LSH::rehash(){
+    int nSize = config.alpha* (double)config.initSize;
+    LitString **nHash = new LitString*[nSize];
+    FOR(i,0,config.initSize){
+        LitString *current = litHash[i];
+        LitString *nLitString = new LitString(current->data, current->s, current->reference);
+        nHash[i] = nLitString;
+    }
+    delete litHash;
+    litHash = nHash;
+}
+
+CSTNode* LSH::insert(string s){
+    
+    if(numOfElement == config.initSize){
+        throw runtime_error("No possible slot");
+    }
+    ll h = hashFunc(s);
+    double hashedValue = h;
+
+    FOR(i,0,config.initSize){
+        h =((int)floor( hashedValue + config.c1*(double)i+ config.c2*(double)(i*i)))%config.initSize; 
+        if(litHash[h] == NULL || litHash[h]->s == s){
+            break;
+        }
+    }
+
+    if((double)numOfElement/(double)config.initSize > config.lambda) rehash();
+
+    if(litHash[h] == nullptr){
+        CSTNode *cstnode = new CSTNode(0, (int)s.size(), s, nullptr, nullptr);
+        litHash[h] = new LS(cstnode, s, 1);
+        numOfElement++;
+        return cstnode;
+    }
+    else{
+        litHash[h]->reference++;
+        return litHash[h]->data;
+    }
+
+}
+
+/*
+ int SearchKey(int k) {
+         int h = HashFunc(k);
+         while (t[h] != NULL && t[h]->k != k) {
+            h = HashFunc(h + 1);
+         }
+         if (t[h] == NULL)
+            return -1;
+         else
+            return t[h]->v;
+      }
+      void Remove(int k) {
+         int h = HashFunc(k);
+         while (t[h] != NULL) {
+            if (t[h]->k == k)
+               break;
+            h = HashFunc(h + 1);
+         }
+         if (t[h] == NULL) {
+            cout<<"No Element found at key "<<k<<endl;
+            return;
+         } else {
+            delete t[h];
+         }
+         cout<<"Element Deleted"<<endl;
+      }
+
+*/

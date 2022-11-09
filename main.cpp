@@ -87,7 +87,7 @@ void tc4()
     delete s1;
     delete s2;
 }
-
+//*/
 void tc5()
 {
     ConcatStringTree s1("Hello");
@@ -312,6 +312,44 @@ void tc15(){
         delete s5;
 }
 
+void tc16(){
+    ConcatStringTree *t1 = new ConcatStringTree("Hello");
+    ConcatStringTree *t2 = new ConcatStringTree(",_t");
+    ConcatStringTree *t3 = new ConcatStringTree("his_is");
+    ConcatStringTree *t4 = new ConcatStringTree("_an");
+
+    ConcatStringTree s1 = t1->concat(*t2).concat(*t3).concat(*t4);
+
+    delete t1;
+    delete t2;
+    delete t3;
+    delete t4;
+
+    ConcatStringTree *t5 = new ConcatStringTree("_assign");
+    ConcatStringTree *t6 = new ConcatStringTree("ment.");
+    ConcatStringTree s2 = t5->concat(*t6);
+
+    delete t5; delete t6;
+    ConcatStringTree s3 = s1.concat(s2);
+
+    cout << s3.reverse().toStringPreOrder() << endl;
+    cout << s3.reverse().toString() << endl;
+
+    cout << s3.subString(1,5).toStringPreOrder() << endl;
+    cout << s3.subString(3,10).toStringPreOrder() << endl;
+    cout << s3.subString(5,15).toStringPreOrder() << endl;
+
+    cout << s3.subString(1,5).reverse().toStringPreOrder() << endl;
+    cout << s3.subString(3,10).reverse().toStringPreOrder() << endl;
+    cout << s3.subString(5,15).reverse().toStringPreOrder() << endl;
+
+    cout << s3.getParTreeStringPreOrder("llr") << endl;
+    cout << s3.getParTreeSize("llr") << endl;
+
+    cout << s3.getParTreeStringPreOrder("rl") << endl;
+    cout << s3.getParTreeSize("rl") << endl; 
+}
+
 void tc17(){
     CST sA("Hello"), sB(",_t"), sC("his_is"), sD("_an");
     CST s1 = sA.concat(sB), s2 = sC.concat(sD), s3 = s1.concat(s2);
@@ -365,6 +403,21 @@ void tc18(){
     cout<<"s7 = "<<s7.toStringPreOrder()<<endl;
     cout<<"s7 = "<<s7.toString()<<endl; 
 
+}
+
+void tc19(){
+    ConcatStringTree *t1 = new ConcatStringTree("Doraemon,");
+    ConcatStringTree *t2 = new ConcatStringTree("Luke,");
+    ConcatStringTree *t3 = new ConcatStringTree("Jerry,");
+    ConcatStringTree *t4 = new ConcatStringTree("Than Don Dat Viet");
+    ConcatStringTree* s0 = new ConcatStringTree(t1->concat(*t4));
+    ConcatStringTree s1 = s0->concat(*t3);
+    ConcatStringTree s2 = s1.concat(*t2);
+
+    delete t1;
+    delete t3;
+    delete s0;
+    cout << s1.getParTreeStringPreOrder("ll") << endl;
 }
 
 void tc20(){
@@ -456,6 +509,30 @@ void tc24()
     cout << s3.toStringPreOrder() << endl;
 }
 
+
+void tc25(){
+    CST *s0 = new CST("Hello"), *sB = new CST(",_t"), *sC = new CST("his_is"), *sD = new CST("_an");
+    CST *s1 = new CST(s0->concat(*sB)), *s2 = new CST(sC->concat(*sD)), *s3 = new CST(s1->concat(*s2));
+
+    cout<<"s1 : "<<s3->getParTreeStringPreOrder("l")<<endl;
+    cout<<"s0 : "<<s3->getParTreeStringPreOrder("ll")<<endl;
+    delete s1;
+    cout<<"Deleted s1\n";
+    cout<<"s1 : "<<s3->getParTreeStringPreOrder("l")<<endl;
+    cout<<"s0 : "<<s3->getParTreeStringPreOrder("ll")<<endl;
+
+    delete s0;
+    cout<<"Deleted s0\n";
+    cout<<"s1 : "<<s3->getParTreeStringPreOrder("l")<<endl;
+    cout<<"s0 : "<<s3->getParTreeStringPreOrder("ll")<<endl;
+
+    //Some more delete 
+    delete s3;
+    delete sB;
+    delete sC;
+    delete s2;
+    delete sD;
+}
 
 void tc47() {
     CST* s0 = new CST("0123456789");
@@ -705,7 +782,10 @@ void tc166(){
     CST s14 = s13.concat(s13);
     cout<<"s14 = "<<s14.toStringPreOrder()<<endl;
     cout<<"s14 = "<<s14.toString()<<endl;
+
+
 }
+
 
 int main() {
 
@@ -717,15 +797,7 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    tc164();
-    tc165();
-    tc166();
-    tc20();
-    tc22();
-    tc23();
-    tc23();
-    tc47();
-    int* adas = new int[1231];
+    tc5();
     _CrtDumpMemoryLeaks();
     return 0;
 }

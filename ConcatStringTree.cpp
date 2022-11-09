@@ -106,6 +106,18 @@ CST::~CST(){
                 root->ancestor.deleteNode(root->ancestor.root, result.target);
 
         }  
+        static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
+            
+            if(root->ancestor.size() + root->parent.size() == 0){
+                root->left = left;
+                root->right = right;
+                delete root;
+            }
+
+
+            return nullptr;
+
+        }  
     };
     
     int  deletingId = root->myId;
@@ -131,7 +143,7 @@ CST::~CST(){
     }
 
     if(root->ancestor.size() + root->parent.size() == 0){
-        delete root;
+        postorder(root, obj, TempStruct::deleteFunc);
         root = nullptr;
     }
 }

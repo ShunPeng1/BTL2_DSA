@@ -2,6 +2,8 @@
 
 #define CST ConcatStringTree
 
+
+
 void tc1()
 {
     ConcatStringTree s1("acbbcab");
@@ -155,7 +157,6 @@ void tc11(){
     cout<<s3->getParTreeStringPreOrder("l")<<endl;
     delete s2;
     delete s3;
-    
     
 
 }
@@ -707,15 +708,24 @@ void tc166(){
 }
 
 int main() {
-    tc14();
+
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
+    _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
+    _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
+    _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
+
     tc164();
     tc165();
     tc166();
-    tc17();
-    tc18();
     tc20();
     tc22();
     tc23();
-    tc24();
+    tc23();
+    tc47();
+    int* adas = new int[1231];
+    _CrtDumpMemoryLeaks();
     return 0;
 }

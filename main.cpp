@@ -60,7 +60,7 @@ void tc3()
     delete s3;
     delete s4;
 }
-/*
+
 void tc4()
 {
     HashConfig hashConfig(
@@ -68,7 +68,7 @@ void tc4()
         0.5,
         0.5,
         0.75,
-        2,
+        2.0,
         4
     );
     LitStringHash* litStringHash = new LitStringHash(hashConfig);
@@ -77,15 +77,24 @@ void tc4()
 
     cout << s1->toString() << endl;
     cout << s2->toString() << endl;
+
+    
+    cout << litStringHash->getLastInsertedIndex() << endl;
     ReducedConcatStringTree* s3 = new ReducedConcatStringTree("bb", litStringHash);
 
     cout << litStringHash->getLastInsertedIndex() << endl;
     cout << litStringHash->toString() << endl;
-
-    delete litStringHash;
+    
     delete s3;
+    
+    cout << litStringHash->getLastInsertedIndex() << endl;
     delete s1;
+    
+    cout << litStringHash->getLastInsertedIndex() << endl;
     delete s2;
+    
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    delete litStringHash;
 }
 //*/
 void tc5()
@@ -797,7 +806,7 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    tc5();
+    tc4();
     _CrtDumpMemoryLeaks();
     return 0;
 }

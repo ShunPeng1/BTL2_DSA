@@ -338,7 +338,6 @@ struct CSTNode{
     CSTNode(int,int,string, CSTNode *, CSTNode * );
 };
 
-
 class ConcatStringTree {
 protected:
     CSTNode *root;
@@ -348,15 +347,15 @@ public:
     ConcatStringTree(const ConcatStringTree&& otherS);
     ConcatStringTree(CSTNode *_root, bool _isTemporary, bool _isShallowNorDeep);
     ConcatStringTree(const char * s);
-    ~ConcatStringTree();
+    virtual ~ConcatStringTree();
     int length() const;
     char get(int index);
     int indexOf(char c);
     string toStringPreOrder() const;
     string toString() const;
-    ConcatStringTree concat(const ConcatStringTree & otherS) const;
-    ConcatStringTree subString(int from, int to) const;
-    ConcatStringTree reverse() const;
+    virtual ConcatStringTree concat(const ConcatStringTree & otherS) const;
+    virtual ConcatStringTree subString(int from, int to) const;
+    virtual ConcatStringTree reverse() const;
 
     int getParTreeSize(const string & query) const;
     string getParTreeStringPreOrder(const string & query) const;
@@ -377,6 +376,9 @@ private:
 
     friend class ReducedConcatStringTree;
     friend class LitStringHash;
+
+public:
+    HashConfig(int,double,double,double, double, int);
 };
 
 class LitString{
@@ -390,27 +392,38 @@ public:
 };
 
 class LitStringHash {
+public:
     LitString **litHash;
     HashConfig config;
     int numOfElement = 0;
-public:
+
+    int lastInsertedIndex = -1;
+
     LitStringHash(const HashConfig & hashConfig);
+    ~LitStringHash();
     int getLastInsertedIndex() const;
     string toString() const;
 
     long long hashFunc(string);
+    int probingFunc(int, long long);
     void rehash();
     CSTNode* insert(string);
-    int searchKey();
-    void remove();
-};
-class ReducedConcatStringTree : public ConcatStringTree {
-    
-     
-public:
-    ReducedConcatStringTree(const char * _s, LitStringHash * _litStringHash);
-    LitStringHash * litStringHash;
+    //int searchKey();
+    void remove(string);
 
+};
+class ReducedConcatStringTree : public ConcatStringTree { 
+    LitStringHash * litStringHash;
+public:
+
+    ReducedConcatStringTree(ReducedConcatStringTree && other);
+    ReducedConcatStringTree(const char * _s, LitStringHash * _litStringHash);
+    ReducedConcatStringTree(CSTNode * , LitStringHash *, bool, bool);
+    virtual ~ReducedConcatStringTree();
+
+    
+    ConcatStringTree subString(int from, int to) const;
+    ConcatStringTree reverse() const;    
 };
 
 

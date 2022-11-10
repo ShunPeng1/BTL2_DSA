@@ -23,6 +23,7 @@ typedef long long ll;
 #define LS LitString
 #define LSH LitStringHash
 #define RCST ReducedConcatStringTree
+#define HC HashConfig
 
 // CSTNode SECTION
 CSTNode::CSTNode(int _leftLength=0, int _length = 0, string _data = "", CSTNode *_left = nullptr, CSTNode *_right=nullptr ): 
@@ -69,8 +70,6 @@ CST::CST(const CST&& otherS) {
     };
 
     
-    
-    //BUG
     TempStruct obj;
     this->root = postorder(otherS.root, obj, TempStruct::executeFunc);
     delete otherS.root;
@@ -112,11 +111,10 @@ CST::~CST(){
         static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
             
             if(root->ancestor.size() + root->parent.size() == 0){
-                root->left = left;
-                root->right = right;
+                root->left = nullptr;
+                root->right = nullptr;
                 delete root;
             }
-
 
             return nullptr;
 
@@ -149,6 +147,7 @@ CST::~CST(){
         postorder(root, obj, TempStruct::deleteFunc);
         root = nullptr;
     }
+
 }
 
 int CST::length() const{
@@ -485,33 +484,49 @@ string PT::toStringPreOrder() const{
     return result;
 }
 
-
-//LitString SECTION
-LS::LitString(CSTNode *_data,string _s , int _reference): data(_data),s(_s), reference(_reference)
+//HashConfig SECTION
+HC::HC(int _p = 0, double _c1 = 0, double _c2 = 0, double _lambda= 0 , double _alpha= 0 , int _initSize= 0):
+    p(_p), c1(_c1), c2(_c2), lambda(_lambda), alpha(_alpha), initSize(_initSize)
 {
 
 }
 
-LS::~LitString(){
+//LitString SECTION
+LS::LS(CSTNode *_data ,string _s , int _reference): data(_data),s(_s), reference(_reference)
+{
+
+}
+
+LS::~LS(){
     if(reference == 0) delete data;
 }
 
 //LitStringHash SECTION
-LSH::LitStringHash(const HashConfig &_config){
+LSH::LSH(const HashConfig &_config){
     config = _config;
+    lastInsertedIndex = -1;
     litHash = new LS*[config.initSize];
     FOR(i,0,config.initSize){
         litHash[i] = nullptr;
     }
 }
 
+LSH::~LSH(){
+    if(numOfElement) return ;
+}
+
 ll LSH::hashFunc(string s){
-    ll result = 0;
+    ll result = 0, currP = 1;
     FOR(i,0,s.size()){
-        result+= (ll)s[i]*(ll)config.p;
+        result+= ((ll)s[i])*currP;
+        currP *= config.p; 
     }
     result = result% ((ll)config.initSize);
     return (int) result;
+}
+
+int LSH::probingFunc(int hashedValue, long long i){
+    return ((int)( (double)hashedValue + config.c1*(double)i+ config.c2*(double)(i*i)+config.initSize))%config.initSize; 
 }
 
 void LSH::rehash(){
@@ -521,8 +536,9 @@ void LSH::rehash(){
         LitString *current = litHash[i];
         LitString *nLitString = new LitString(current->data, current->s, current->reference);
         nHash[i] = nLitString;
+        delete current;
     }
-    delete litHash;
+    delete []litHash;
     litHash = nHash;
 }
 
@@ -531,33 +547,77 @@ CSTNode* LSH::insert(string s){
     if(numOfElement == config.initSize){
         throw runtime_error("No possible slot");
     }
-    ll h = hashFunc(s);
-    double hashedValue = h;
+    ll index = hashFunc(s), hashedValue = index;
 
     FOR(i,0,config.initSize){
-        h =((int)floor( hashedValue + config.c1*(double)i+ config.c2*(double)(i*i)+config.initSize))%config.initSize; 
-        if(litHash[h] == NULL || litHash[h]->s == s){
+        index = probingFunc(hashedValue, i); 
+        if(litHash[index] == NULL || litHash[index]->s == s){
             break;
         }
     }
 
     if((double)numOfElement/(double)config.initSize > config.lambda) rehash();
 
-    if(litHash[h] == nullptr){
+    if(litHash[index] == nullptr){
         CSTNode *cstnode = new CSTNode(0, (int)s.size(), s, nullptr, nullptr);
-        litHash[h] = new LS(cstnode, s, 1);
+        litHash[index] = new LS(cstnode, s, 1);
         numOfElement++;
+        lastInsertedIndex = index;
         return cstnode;
     }
     else{
-        litHash[h]->reference++;
-        return litHash[h]->data;
+        litHash[index]->reference++;
+        return litHash[index]->data;
     }
 
 }
 
+void LSH::remove(string s) {
+    int index = hashFunc(s), hashedValue = index;
+    for (long long i = 0; litHash[index]->s != s; i++) {
+        index = probingFunc(hashedValue, i);
+    }
+    if (litHash[index] == NULL) {
+        throw runtime_error("NO STRING FOUND");
+        return;
+    }
+
+    if(--litHash[index]->reference == 0){
+        
+        delete litHash[index];
+        numOfElement--;
+        if(numOfElement == 0){
+            delete [] litHash;
+            lastInsertedIndex = -1;
+        }
+    }
+    else{
+        litHash[index]->reference--;
+    }
+
+}
+
+int LSH::getLastInsertedIndex() const{
+    return lastInsertedIndex;
+}
+
+string LSH::toString() const{
+    string result = "LitStringHash[";
+    FOR(i,0,config.initSize){
+        if(result.back() == ')') result+= ";";
+        result+= "(";
+        if(litHash[i]!= nullptr && litHash[i]->reference!=0){
+            result+= "litS=\""+ litHash[i]->s+"\"";
+        }
+        result+= ")";
+    }
+
+    result+= "]";
+    return result;
+}
+
 //ReducedConcatStringTree SECTION
-RCST::ReducedConcatStringTree(const char * _s, LitStringHash * _litStringHash){
+RCST::RCST(const char * _s, LitStringHash * _litStringHash){
     int i = 0;
     string s = "";
     while (_s[i] != '\0') {
@@ -579,32 +639,226 @@ RCST::ReducedConcatStringTree(const char * _s, LitStringHash * _litStringHash){
 
 }
 
+RCST::RCST(CSTNode * _root = nullptr, LitStringHash * _litStringHash = nullptr, bool _isShallowNorCopy = false, bool _isTemporay = false):
+   CST(_root, _isShallowNorCopy, _isTemporay), litStringHash(_litStringHash)
+{
 
-/*
- int SearchKey(int k) {
-         int h = HashFunc(k);
-         while (t[h] != NULL && t[h]->k != k) {
-            h = HashFunc(h + 1);
-         }
-         if (t[h] == NULL)
-            return -1;
-         else
-            return t[h]->v;
-      }
-      void Remove(int k) {
-         int h = HashFunc(k);
-         while (t[h] != NULL) {
-            if (t[h]->k == k)
-               break;
-            h = HashFunc(h + 1);
-         }
-         if (t[h] == NULL) {
-            cout<<"No Element found at key "<<k<<endl;
-            return;
-         } else {
-            delete t[h];
-         }
-         cout<<"Element Deleted"<<endl;
-      }
+}
 
-*/
+RCST::RCST(RCST && otherS){
+    this->root = nullptr;
+    this->litStringHash = otherS.litStringHash;
+    this->isShallowNorDeep = false;
+    this->isTemporary = false;
+    if (otherS.isShallowNorDeep) {//is return from concat so we shallow copy
+        (this->root) = (otherS.root);
+        return;
+    }
+
+    //is return from the reverse or substring so we deep copy
+        
+    struct TempStruct{    
+        
+        LitStringHash *litStringHash;
+        static CSTNode* executeFunc(CSTNode * root, TempStruct &result, CSTNode*left, CSTNode *right){
+            CSTNode *cstnode;
+            if(root->left == nullptr && root->right == nullptr){//is string node
+                cstnode = result.litStringHash->insert(root->data);
+            }
+            else{
+                CSTNode *cstnode = new CSTNode();
+                *(cstnode) = *(root);
+                cstnode->left = left;
+                cstnode->right = right;
+            }
+
+            if(root->left) delete root->left;
+            if(root->right) delete root->right;
+
+            return cstnode;
+        }
+    };
+
+    
+    TempStruct obj{this->litStringHash};
+    this->root = postorder(otherS.root, obj, TempStruct::executeFunc);
+    delete otherS.root;
+
+    createParentAndChildAncestor(*this);    
+    
+}
+
+RCST::~RCST(){
+    if(isTemporary) return;
+    
+    struct TempStruct{   
+        int target;
+        LitStringHash *litStringHash;
+        static void ancestorFunc(CSTNode * root, TempStruct &result){
+            if(root->ancestor.findPTNode(root->ancestor.root, result.target))
+                root->ancestor.deleteNode(root->ancestor.root, result.target);
+
+        }  
+        static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
+            
+            if(root->ancestor.size() + root->parent.size() == 0){
+                if(root->left == nullptr && root->right == nullptr && root->data != "" ){
+                    result.litStringHash->remove(root->data);
+
+                }
+                else{//is non-string node
+                        
+                    root->left = nullptr;
+                    root->right = nullptr;
+                    delete root;
+                }
+
+
+            }
+            return nullptr;
+        }  
+    };
+    
+    int  deletingId = root->myId;
+    root->parent.deleteNode(root->parent.root, deletingId);
+    
+    TempStruct obj{deletingId, litStringHash};
+    CSTNode * left = this->root->left , *right = this->root->right;
+    if(left){
+        if(left->parent.findPTNode(left->parent.root, deletingId)) 
+            left->parent.deleteNode(left->parent.root, deletingId);
+
+        preorder(left->left, obj, TempStruct::ancestorFunc);
+        preorder(left->right, obj, TempStruct::ancestorFunc);
+    }
+
+    if(right){
+        
+        if(right->parent.findPTNode(right->parent.root, deletingId)) 
+            right->parent.deleteNode(right->parent.root, deletingId);
+        
+        preorder(right->left, obj, TempStruct::ancestorFunc);
+        preorder(right->right, obj, TempStruct::ancestorFunc);
+    }
+
+    if(root->ancestor.size() + root->parent.size() == 0){
+        postorder(root, obj, TempStruct::deleteFunc);
+        root = nullptr;
+    }
+    
+    isTemporary = true;
+}
+
+ConcatStringTree RCST::subString(int from, int to) const{
+    if (from <0 || to>length()) {
+        throw out_of_range("Index of string is invalid!");
+    }
+
+    if (from >= to) {
+        throw logic_error("Invalid range!");
+    }
+
+    struct TempStruct{
+        int from;
+        int to;
+        int current;
+        
+        static CSTNode* executeFunc(CSTNode * root, TempStruct &result, CSTNode *left, CSTNode *right){
+            if(root->left == nullptr && root->right == nullptr){//is string node
+                string tpStr = "";
+                FOR(i, 0, root->length) {
+                    int currentPos = result.current + i;
+                    if(currentPos >= result.from && currentPos < result.to) {
+                        tpStr += root->data[i];
+                    }
+                }
+                
+                result.current+= root->length;
+
+                if(tpStr.size()!= 0){
+
+                    CSTNode *cstnode = new CSTNode(0,tpStr.size(),tpStr);
+                    return cstnode;
+                }
+                else return nullptr;
+            }
+            else{//non-string node                
+                if(left == nullptr && right == nullptr) return nullptr;
+
+                int leftLength = 0, length = 0 ;
+                if(left) {
+                    leftLength = left->length;
+                    length += left->length;
+                }
+                if(right) {
+                    length += right->length;
+                }
+                CSTNode * nRoot = new CSTNode(leftLength, length, "", left, right);
+
+                return nRoot;
+            }
+        }
+
+    };
+    
+    TempStruct obj{from , to , 0};
+    CSTNode * tempRoot = postorder(this->root, obj, TempStruct::executeFunc); 
+
+    RCST result(tempRoot, litStringHash, false, true);
+    //result.root = tempRoot;
+    //result.isTemporary = true;
+    //result.isShallowNorDeep =false;
+
+    //cout<<result.toStringPreOrder()<<endl;
+    return (RCST&&) result;
+
+}
+
+ConcatStringTree RCST::reverse() const{
+    
+    struct TempStruct{   
+        static CSTNode* executeFunc(CSTNode * root, TempStruct &result, CSTNode *left, CSTNode *right){
+            if(root->left == nullptr && root->right == nullptr){//is string node
+                string tpStr = "";
+                FORR(i, 0, root->length) {
+                    tpStr += root->data[i];
+                }
+
+                CSTNode *cstnode = new CSTNode(0,tpStr.size(),tpStr);
+                return cstnode;
+            }
+            else{//non-string node                
+                if(left == nullptr && right == nullptr) return nullptr;
+
+                int leftLength = 0, length = 0 ;
+                if(right) {
+                    leftLength = right->length;
+                    length += right->length;
+                }
+                if(left) {
+                    length += left->length;
+                }
+                CSTNode * nRoot = new CSTNode(leftLength, length, "", right, left);
+
+                return nRoot;
+            }  
+        } 
+    };
+    
+    TempStruct obj;
+    CSTNode * tempRoot = postorder(this->root, obj, TempStruct::executeFunc); 
+
+    RCST result(tempRoot, litStringHash, false, true);
+    //result.root = tempRoot;
+    //result.isTemporary = true;
+    //result.isShallowNorDeep =false;
+
+    //cout<<result.toStringPreOrder()<<endl;
+    return (RCST&&) result;
+
+}
+//*/
+
+
+    
+

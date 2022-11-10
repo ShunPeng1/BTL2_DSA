@@ -3,7 +3,9 @@
 
 #include "main.h"
 
+// forward declaration
 struct CSTNode;
+class ReducedConcatStringTree;
 
 class PTNode {
 public:   
@@ -247,80 +249,6 @@ public:
     }
 };
 
-/*
-struct ALNode{
-    PTNode *data;
-    ALNode *next;    
-
-    ALNode(PTNode *_data = nullptr, ALNode *_next = nullptr):
-        data(_data), next(_next)
-    {
-
-    }
-
-};
-
-class AncestorList{
-    ALNode *head;
-    int numElement;
-
-public:
-    AncestorList(){
-        head = nullptr;
-        numElement = 0;
-    }
-    ~AncestorList(){}
-
-    void addFront(PTNode* item){
-        ALNode *node = new ALNode(item,nullptr);
-        numElement++;
-        if(head == nullptr){
-            head = node;
-            return;
-        }
-        node->next = head;
-        head = node;
-    }
-
-    void removeItem(PTNode* item){
-        if(head == nullptr) return;
-        if(head->data == item){
-            ALNode *temp = head;
-            head = head->next;
-            delete temp;
-            numElement--;
-            return ;
-        }
-
-        ALNode *roam = head;
-        while(roam->next){
-            if(roam->next->data->id == item->id) {
-                ALNode *temp = roam->next;
-                roam->next = roam->next->next;
-                delete temp;
-                numElement--;
-                return;
-            }
-            roam = roam->next;
-        }
-    }
-
-    bool findPTNode(PTNode *node){
-        ALNode *roam = head;
-        while(roam){
-            if(roam->data->id == node->id){
-                return true;
-            }
-            roam = roam->next;
-        }   
-        return false;
-    }
-    
-    int size(){
-        return numElement;
-    }
-};
-*/
 
 struct CSTNode{
     int leftLength;
@@ -343,6 +271,8 @@ protected:
     CSTNode *root;
     bool isTemporary;
     bool isShallowNorDeep;
+
+    friend class ReducedConcatStringTree;
 public:
     ConcatStringTree(const ConcatStringTree&& otherS);
     ConcatStringTree(CSTNode *_root, bool _isTemporary, bool _isShallowNorDeep);
@@ -353,18 +283,17 @@ public:
     int indexOf(char c);
     string toStringPreOrder() const;
     string toString() const;
-    virtual ConcatStringTree concat(const ConcatStringTree & otherS) const;
-    virtual ConcatStringTree subString(int from, int to) const;
-    virtual ConcatStringTree reverse() const;
+    ConcatStringTree concat(const ConcatStringTree & otherS) const;
+    ConcatStringTree subString(int from, int to) const;
+    ConcatStringTree reverse() const;
 
     int getParTreeSize(const string & query) const;
     string getParTreeStringPreOrder(const string & query) const;
 
-    void createParentAndChildAncestor(ConcatStringTree&) const;
+    virtual void createParentAndChildAncestor() const;
 };
 
 
-class ReducedConcatStringTree; // forward declaration
 
 class HashConfig {
 private:
@@ -422,8 +351,10 @@ public:
     virtual ~ReducedConcatStringTree();
 
     
-    ConcatStringTree subString(int from, int to) const;
-    ConcatStringTree reverse() const;    
+    ReducedConcatStringTree subString(int from, int to) const;
+    ReducedConcatStringTree reverse() const;
+    ReducedConcatStringTree concat(const ReducedConcatStringTree& otherS) const;
+    void createParentAndChildAncestor() const;
 };
 
 

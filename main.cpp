@@ -5,7 +5,7 @@
 
 
 void tc1()
-{
+{ 
     ConcatStringTree s1("acbbcab");
     cout << s1.length() << endl;
     cout << s1.get(1) << endl;
@@ -795,6 +795,80 @@ void tc166(){
 
 }
 
+void tc200() {
+    HashConfig hashConfig(
+        2,
+        0.5,
+        0.5,
+        0.75,
+        2.0,
+        4
+    );
+    LitStringHash* litStringHash = new LitStringHash(hashConfig);
+    ReducedConcatStringTree* s1 = new ReducedConcatStringTree("a", litStringHash);
+    ReducedConcatStringTree* s2 = new ReducedConcatStringTree("bb", litStringHash);
+
+    cout << s1->toString() << endl;
+    cout << s2->toString() << endl;
+
+
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+    ReducedConcatStringTree* s3 = new ReducedConcatStringTree("bb", litStringHash);
+
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s4 = new ReducedConcatStringTree(s1->concat(*s2));
+    cout << "create s4\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s5 = new ReducedConcatStringTree(s4->reverse());
+    cout << "create s5\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s6 = new ReducedConcatStringTree(s4->subString(0,s5->length()));
+    cout << "create s6\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+
+
+    delete s4;
+    cout << "delete s4\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+
+    delete s5;
+    cout << "delete s5\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+
+    delete s6;
+    cout << "delete s6\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    delete s3;
+    cout << "delete s3\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+    
+    delete s1;
+    cout << "delete s1\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+    
+    delete s2;
+    cout << "delete s2\n";
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+    delete litStringHash;
+}
 
 int main() {
 
@@ -806,7 +880,7 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    tc4();
+    tc200();
     _CrtDumpMemoryLeaks();
     return 0;
 }

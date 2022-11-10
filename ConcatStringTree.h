@@ -340,6 +340,7 @@ struct CSTNode{
 
 
 class ConcatStringTree {
+protected:
     CSTNode *root;
     bool isTemporary;
     bool isShallowNorDeep;
@@ -375,39 +376,39 @@ private:
     int initSize;
 
     friend class ReducedConcatStringTree;
+    friend class LitStringHash;
 };
 
-class ReducedConcatStringTree : public ConcatStringTree {
-
+class LitString{
 public:
-    class LitString{
-    public:
-        CSTNode *data;
-        string s;
-        int reference;
+    CSTNode *data;
+    string s;
+    int reference;
 
-        LitString(CSTNode *,string, int);
-        ~LitString();
-    };
+    LitString(CSTNode *,string, int);
+    ~LitString();
+};
 
-    class LitStringHash {
-        LitString **litHash;
-        HashConfig config;
-        int numOfElement = 0;
-    public:
-        LitStringHash(const HashConfig & hashConfig);
-        int getLastInsertedIndex() const;
-        string toString() const;
+class LitStringHash {
+    LitString **litHash;
+    HashConfig config;
+    int numOfElement = 0;
+public:
+    LitStringHash(const HashConfig & hashConfig);
+    int getLastInsertedIndex() const;
+    string toString() const;
 
-        long long hashFunc(string);
-        void rehash();
-        CSTNode* insert(string);
-        int searchKey();
-        void remove();
-    };
+    long long hashFunc(string);
+    void rehash();
+    CSTNode* insert(string);
+    int searchKey();
+    void remove();
+};
+class ReducedConcatStringTree : public ConcatStringTree {
+    
      
 public:
-    ReducedConcatStringTree(const char * s, LitStringHash * litStringHash);
+    ReducedConcatStringTree(const char * _s, LitStringHash * _litStringHash);
     LitStringHash * litStringHash;
 
 };

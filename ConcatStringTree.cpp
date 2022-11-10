@@ -20,8 +20,8 @@ typedef long long ll;
 
 #define CST ConcatStringTree
 #define PT ParentsTree
-#define LS ReducedConcatStringTree::LitString
-#define LSH ReducedConcatStringTree::LitStringHash
+#define LS LitString
+#define LSH LitStringHash
 #define RCST ReducedConcatStringTree
 
 // CSTNode SECTION
@@ -79,15 +79,15 @@ CST::CST(const CST&& otherS) {
     
 }
 
-CST::CST(const char * s){
+CST::CST(const char * _s){
     int i = 0;
-    string tp = "";
-    while (s[i] != '\0') {
-        tp += s[i];
+    string s = "";
+    while (_s[i] != '\0') {
+        s += _s[i];
         i++;
     }
-
-    CSTNode* cstnode = new CSTNode(0, tp.size(), tp, nullptr, nullptr);
+    
+    CSTNode* cstnode = new CSTNode(0, s.size(), s, nullptr, nullptr);
     PTNode * ptnode  = new PTNode(cstnode,0,0, nullptr, nullptr);
     ptnode->newID();
     cstnode->parent.insert(cstnode->parent.root, ptnode);
@@ -464,7 +464,7 @@ void PTNode::newID(){
 }
 
 
-//ParentTree Section
+//ParentTree SECTION
 int PT::size() const{
     return numElement;
 }
@@ -535,7 +535,7 @@ CSTNode* LSH::insert(string s){
     double hashedValue = h;
 
     FOR(i,0,config.initSize){
-        h =((int)floor( hashedValue + config.c1*(double)i+ config.c2*(double)(i*i)))%config.initSize; 
+        h =((int)floor( hashedValue + config.c1*(double)i+ config.c2*(double)(i*i)+config.initSize))%config.initSize; 
         if(litHash[h] == NULL || litHash[h]->s == s){
             break;
         }
@@ -555,6 +555,30 @@ CSTNode* LSH::insert(string s){
     }
 
 }
+
+//ReducedConcatStringTree SECTION
+RCST::ReducedConcatStringTree(const char * _s, LitStringHash * _litStringHash){
+    int i = 0;
+    string s = "";
+    while (_s[i] != '\0') {
+        s += _s[i];
+        i++;
+    }
+
+    litStringHash = _litStringHash;
+    CSTNode *cstnode = litStringHash->insert(s);
+    
+    PTNode * ptnode  = new PTNode(cstnode,0,0, nullptr, nullptr);
+    ptnode->newID();
+    cstnode->parent.insert(cstnode->parent.root, ptnode);
+    
+    root = cstnode;
+
+    isShallowNorDeep = false;
+    isTemporary = false;
+
+}
+
 
 /*
  int SearchKey(int k) {

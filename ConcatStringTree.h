@@ -37,35 +37,18 @@ public:
     }
     int calHeight(PTNode *p){
 
-            if(p->left && p->right){
-            if (p->left->height < p->right->height)
-                return p->right->height + 1;
-            else return  p->left->height + 1;
-            }
-            else if(p->left && p->right == NULL){
-               return p->left->height + 1;
-            }
-            else if(p->left ==NULL && p->right){
-               return p->right->height + 1;
-            }
-            return 0;
-
-    }
-
-        int calheight(PTNode *p){
-
-            if(p->left && p->right){
-            if (p->left->height < p->right->height)
-                return p->right->height + 1;
-            else return  p->left->height + 1;
-            }
-            else if(p->left && p->right == NULL){
-               return p->left->height + 1;
-            }
-            else if(p->left ==NULL && p->right){
-               return p->right->height + 1;
-            }
-            return 0;
+        if(p->left && p->right){
+        if (p->left->height < p->right->height)
+            return p->right->height + 1;
+        else return  p->left->height + 1;
+        }
+        else if(p->left && p->right == NULL){
+        return p->left->height + 1;
+        }
+        else if(p->left ==NULL && p->right){
+        return p->right->height + 1;
+        }
+        return 1;
 
     }
 
@@ -92,6 +75,8 @@ public:
         p->left = tp->right;
         tp->right = p;
         if(p == root) root = tp; 
+        p->height = calHeight(p);
+        tp->height = calHeight(tp);
         return tp; 
     }
 
@@ -104,6 +89,9 @@ public:
         p->right = tp->left;
         tp->left = p;
         if(p == root) root = tp; 
+        
+        p->height = calHeight(p);
+        tp->height = calHeight(tp);
         return tp; 
     }
 
@@ -120,6 +108,10 @@ public:
         tp2 ->left = p;
         tp2->right = tp; 
         if(p == root) root = tp2; 
+        
+        p->height = calHeight(p);
+        tp->height = calHeight(tp);
+        tp2->height = calHeight(tp2);
         return tp2; 
     }
 
@@ -137,6 +129,10 @@ public:
         tp2->left = tp; 
         
         if(p == root) root = tp2; 
+        
+        p->height = calHeight(p);
+        tp->height = calHeight(tp);
+        tp2->height = calHeight(tp2);
         return tp2; 
     }
 
@@ -169,8 +165,7 @@ public:
         }
         else if(balanceFactor(r)==2 && balanceFactor(r->left)==-1){
             r = lrrotation(r);
-        }        
-
+        }      
         return r;
 
         }

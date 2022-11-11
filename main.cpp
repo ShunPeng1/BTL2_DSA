@@ -958,7 +958,14 @@ void tc201() {
 
 void tc342(){
     CST *s0 = new CST("a");
-    CST *s1 = new CST(s0->subString(1,0));
+    CST *s1 = new CST("Hi");    
+    CST *s2 = new CST(s1->concat(*s0));
+    CST *s3 = new CST(s1->concat(*s0));
+    CST *s4 = new CST(s1->concat(*s0));
+    CST *s5 = new CST(s1->concat(*s0));
+    CST *s6 = new CST(s1->concat(*s0));
+    cout<<s1->getParTreeStringPreOrder("")<<endl;
+
 }
 int main() {
 

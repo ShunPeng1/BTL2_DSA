@@ -333,8 +333,8 @@ public:
     int getLastInsertedIndex() const;
     string toString() const;
 
-    long long hashFunc(string);
-    int probingFunc(int, long long);
+    long long hashFunc(string, int);
+    int probingFunc(LitString **&,string, int ,bool);
     void rehash();
     CSTNode* insert(string);
     //int searchKey();

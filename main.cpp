@@ -870,6 +870,91 @@ void tc200() {
     delete litStringHash;
 }
 
+
+void tc201() {
+    HashConfig hashConfig(
+        2,
+        0.5,
+        0.5,
+        0.75,
+        2.0,
+        4
+    );
+    LitStringHash* litStringHash = new LitStringHash(hashConfig);
+    ReducedConcatStringTree* s1 = new ReducedConcatStringTree("ABAB", litStringHash);
+    cout<<"s1 = " << s1->toString() << endl;
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s2 = new ReducedConcatStringTree("BAB", litStringHash);
+    cout<<"s2 = " << s2->toString() << endl;
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s3 = new ReducedConcatStringTree("BABA", litStringHash);    
+    cout<<"s3 = " << s3->toString() << endl;
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s4 = new ReducedConcatStringTree(s1->concat(*s2));
+    cout<<"s4 = " << s4->toString() << endl;
+    cout<<"s4 = " << s4->toStringPreOrder() << endl;
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s5 = new ReducedConcatStringTree(s4->concat(*s3));
+    cout<<"s5 = " << s5->toString() << endl;
+    cout<<"s5 = " << s5->toStringPreOrder() << endl;
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s6 = new ReducedConcatStringTree(s5->subString(2, s5->length()-2));
+    cout<<"s6 = " << s6->toString() << endl;
+    cout<<"s6 = " << s6->toStringPreOrder() << endl;
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s7 = new ReducedConcatStringTree(s5->reverse());
+    cout<<"s7 = " << s7->toString() << endl;
+    cout<<"s7 = " << s7->toStringPreOrder() << endl;
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    
+    delete s1;
+    cout << "delete s1\n";
+    cout << litStringHash->toString() << endl;
+
+    delete s2;
+    cout << "delete s2\n";
+    cout << litStringHash->toString() << endl;
+    
+
+    delete s4;
+    cout << "delete s4\n";
+    cout << litStringHash->toString() << endl;
+
+    
+    delete s7;
+    cout << "delete s7\n";
+    cout << litStringHash->toString() << endl;
+
+    delete s5;
+    cout << "delete s5\n";
+    cout << litStringHash->toString() << endl;
+
+
+    delete s6;
+    cout << "delete s6\n";
+    cout << litStringHash->toString() << endl;
+
+    delete s3;
+    cout << "delete s3\n";
+    cout << litStringHash->toString() << endl;
+
+    delete litStringHash;
+}
+
 int main() {
 
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -880,7 +965,7 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    tc200();
+    tc201();
     _CrtDumpMemoryLeaks();
     return 0;
 }

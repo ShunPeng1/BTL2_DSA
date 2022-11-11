@@ -955,6 +955,11 @@ void tc201() {
     delete litStringHash;
 }
 
+
+void tc342(){
+    CST *s0 = new CST("a");
+    CST *s1 = new CST(s0->subString(1,0));
+}
 int main() {
 
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -965,7 +970,7 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    tc201();
+    tc342();
     _CrtDumpMemoryLeaks();
     return 0;
 }

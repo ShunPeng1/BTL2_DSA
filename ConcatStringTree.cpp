@@ -259,7 +259,7 @@ ConcatStringTree CST::concat(const ConcatStringTree & otherS) const{
 }
 
 ConcatStringTree CST::subString(int from, int to) const{
-    if (from <0 || to>length()) {
+    if (from <0 || from >length()-1 || to<0  || to>length()) {
         throw out_of_range("Index of string is invalid!");
     }
 

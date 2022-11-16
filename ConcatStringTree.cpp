@@ -590,7 +590,7 @@ CSTNode* LSH::insert(string s){
         cstnode = litHash[litIndex]->data;
     }
 
-    if((double)numOfElement/(double)config.initSize >= config.lambda) rehash();
+    if((double)numOfElement/(double)config.initSize > config.lambda) rehash();
     //cout << "litHash[litIndex] " << litHash[litIndex]->s << " = " << litHash[litIndex]->reference << endl;
         
     return cstnode;
@@ -692,7 +692,7 @@ RCST::RCST(RCST && otherS){
     //is return from the reverse or substring so we deep copy
         
     struct TempStruct{    
-        
+    
         LitStringHash *litStringHash;
         static CSTNode* executeFunc(CSTNode * root, TempStruct &result, CSTNode*left, CSTNode *right){
             CSTNode *cstnode = nullptr;
@@ -892,53 +892,3 @@ ReducedConcatStringTree RCST::reverse() const{
     return (RCST&&) result;
 
 }
-
-
-void RCST::createParentAndChildAncestor() const{
-    
-    struct TempStruct{   
-        PTNode *target;
-        static void ancestorFunc(CSTNode * root, TempStruct &result){
-            if(!root->ancestor.findPTNode(root->ancestor.root,result.target->id)){
-                PTNode *ptnode = new PTNode(result.target->data, result.target->id,0,nullptr,nullptr);
-                root->ancestor.insert(root->ancestor.root,ptnode);
-            } 
-        }  
-    };
-    
-    PTNode *ptnode = new PTNode(this->root, 0,0,nullptr,nullptr);
-    ptnode->newID();
-
-    TempStruct obj{ptnode};
-
-    this->root->parent.insert(this->root->parent.root, ptnode);
-    
-    CSTNode * left = this->root->left , *right = this->root->right;
-    if(left){
-        if(!left->parent.findPTNode(left->parent.root, ptnode->id)) {
-            
-            PTNode *leftNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
-            left->parent.insert(left->parent.root, leftNode);
-        }
-
-        preorder(left->left, obj, TempStruct::ancestorFunc);
-        preorder(left->right, obj, TempStruct::ancestorFunc);
-    }
-
-    if(right){
-        
-        if(!right->parent.findPTNode(right->parent.root,ptnode->id)){
-            PTNode *rightNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
-            right->parent.insert(right->parent.root, rightNode);
-        } 
-        
-        preorder(right->left, obj, TempStruct::ancestorFunc);
-        preorder(right->right, obj, TempStruct::ancestorFunc);
-    }
-}
-
-//*/
-
-
-    
-

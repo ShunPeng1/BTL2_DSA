@@ -349,7 +349,7 @@ public:
     ReducedConcatStringTree subString(int from, int to) const;
     ReducedConcatStringTree reverse() const;
     ReducedConcatStringTree concat(const ReducedConcatStringTree& otherS) const;
-    void createParentAndChildAncestor() const;
+    
 };
 
 

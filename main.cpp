@@ -958,13 +958,24 @@ void tc201() {
 
 void tc342(){
     CST *s0 = new CST("a");
-    CST *s1 = new CST("Hi");    
-    CST *s2 = new CST(s1->concat(*s0));
-    CST *s3 = new CST(s1->concat(*s0));
-    CST *s4 = new CST(s1->concat(*s0));
-    CST *s5 = new CST(s1->concat(*s0));
-    CST *s6 = new CST(s1->concat(*s0));
+    CST *s1 = new CST("a");  
+    CST *s2 = new CST("a");    
+    cout<<s0->getParTreeStringPreOrder("")<<endl;
     cout<<s1->getParTreeStringPreOrder("")<<endl;
+    cout<<s2->getParTreeStringPreOrder("")<<endl;
+    delete s0;
+
+    //cout<<s0->getParTreeStringPreOrder("")<<endl;
+    cout<<s1->getParTreeStringPreOrder("")<<endl;
+    cout<<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s1;
+    
+    //cout<<s0->getParTreeStringPreOrder("")<<endl;
+    //cout<<s1->getParTreeStringPreOrder("")<<endl;
+    cout<<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s2;
 
 }
 int main() {

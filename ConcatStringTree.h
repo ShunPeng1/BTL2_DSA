@@ -19,7 +19,7 @@ public:
     int height;
 
     PTNode( CSTNode*, int, int, PTNode *, PTNode*);
-    void newID();
+    void newID(int);
 };
 
 class ParentsTree
@@ -264,13 +264,14 @@ struct CSTNode{
 class ConcatStringTree {
 protected:
     CSTNode *root;
+    int numOfNode;
     bool isTemporary;
     bool isShallowNorDeep;
 
-    friend class ReducedConcatStringTree;
+    //friend class ReducedConcatStringTree;
 public:
     ConcatStringTree(const ConcatStringTree&& otherS);
-    ConcatStringTree(CSTNode *_root, bool _isTemporary, bool _isShallowNorDeep);
+    ConcatStringTree(CSTNode *_root, int, bool _isTemporary, bool _isShallowNorDeep);
     ConcatStringTree(const char * s);
     virtual ~ConcatStringTree();
     int length() const;
@@ -328,8 +329,8 @@ public:
     int getLastInsertedIndex() const;
     string toString() const;
 
-    long long hashFunc(string, int);
-    int probingFunc(LitString **&,string, int ,bool);
+    long long hashFunc(string, long long);
+    long long probingFunc(LitString **&,string, long long, bool);
     void rehash();
     CSTNode* insert(string);
     //int searchKey();
@@ -342,14 +343,14 @@ public:
 
     ReducedConcatStringTree(ReducedConcatStringTree && other);
     ReducedConcatStringTree(const char * _s, LitStringHash * _litStringHash);
-    ReducedConcatStringTree(CSTNode * , LitStringHash *, bool, bool);
+    ReducedConcatStringTree(CSTNode * , LitStringHash *, int, bool, bool);
     virtual ~ReducedConcatStringTree();
 
     
     ReducedConcatStringTree subString(int from, int to) const;
     ReducedConcatStringTree reverse() const;
     ReducedConcatStringTree concat(const ReducedConcatStringTree& otherS) const;
-    
+    void createParentAndChildAncestor() const;
 };
 
 

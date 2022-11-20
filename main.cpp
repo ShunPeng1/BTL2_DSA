@@ -1,6 +1,7 @@
 #include "ConcatStringTree.h"
 
 #define CST ConcatStringTree
+#define RCST ReducedConcatStringTree
 
 
 
@@ -543,6 +544,48 @@ void tc25(){
     delete sD;
 }
 
+void tc38() {
+    ConcatStringTree* t1 = new ConcatStringTree("Hello");
+    ConcatStringTree* t2 = new ConcatStringTree(",_t");
+    ConcatStringTree* t3 = new ConcatStringTree("his_is");
+    ConcatStringTree* t4 = new ConcatStringTree("_an");
+
+    ConcatStringTree s1 = t1->concat(*t2).concat(*t3);
+
+    delete t1;
+    delete t2;
+    delete t3;
+    delete t4;
+
+    ConcatStringTree* t5 = new ConcatStringTree("_assign");
+    ConcatStringTree* t6 = new ConcatStringTree("ment.");
+    ConcatStringTree s2 = t5->concat(*t6);
+
+    delete t5;
+    delete t6;
+
+    ConcatStringTree s3 = s1.concat(s2);
+
+    cout << s3.reverse().toStringPreOrder() << endl;
+    cout << s3.reverse().toString() << endl;
+    
+
+    cout << s3.subString(1,5).toStringPreOrder() << endl;
+    cout << s3.subString(3,10).toStringPreOrder() << endl;
+    cout << s3.subString(5,15).toStringPreOrder() << endl;
+
+    cout << s3.subString(1,5).reverse().toStringPreOrder() << endl;
+    cout << s3.subString(3,10).reverse().toStringPreOrder() << endl;
+    cout << s3.subString(5,15).reverse().toStringPreOrder() << endl;
+
+    cout << s3.getParTreeStringPreOrder("llr") << endl;
+    cout << s3.getParTreeSize("llr") << endl;
+
+    cout << s3.getParTreeStringPreOrder("rl") << endl;
+    cout << s3.getParTreeSize("rl") << endl;
+    
+}
+
 void tc47() {
     CST* s0 = new CST("0123456789");
  
@@ -957,27 +1000,140 @@ void tc201() {
 
 
 void tc342(){
-    CST *s0 = new CST("a");
-    CST *s1 = new CST("a");  
-    CST *s2 = new CST("a");    
-    cout<<s0->getParTreeStringPreOrder("")<<endl;
-    cout<<s1->getParTreeStringPreOrder("")<<endl;
-    cout<<s2->getParTreeStringPreOrder("")<<endl;
+    HashConfig hashConfig(
+        2,
+        0.5,
+        0.5,
+        0.75,
+        2.0,
+        4
+    );
+    LitStringHash* litStringHash = new LitStringHash(hashConfig);
+    RCST *s0 = new RCST("a", litStringHash);
+    RCST *s1 = new RCST("a", litStringHash);  
+    RCST *s2 = new RCST("a", litStringHash);    
+
+
+    cout << s0->getParTreeStringPreOrder("") << endl;
+    cout << s1->getParTreeStringPreOrder("") << endl;
+    cout << s2->getParTreeStringPreOrder("") << endl;
     delete s0;
 
-    //cout<<s0->getParTreeStringPreOrder("")<<endl;
-    cout<<s1->getParTreeStringPreOrder("")<<endl;
-    cout<<s2->getParTreeStringPreOrder("")<<endl;
+    cout << s1->getParTreeStringPreOrder("") << endl;
+    cout << s2->getParTreeStringPreOrder("") << endl;
 
     delete s1;
     
-    //cout<<s0->getParTreeStringPreOrder("")<<endl;
-    //cout<<s1->getParTreeStringPreOrder("")<<endl;
-    cout<<s2->getParTreeStringPreOrder("")<<endl;
+
+    cout << s2->getParTreeStringPreOrder("") << endl;
 
     delete s2;
+    delete litStringHash;
 
 }
+
+void tc367(){
+    HashConfig hashConfig(11,0.901578,0.606372,0.713767,1.62496,4);
+        LitStringHash litStringHash(hashConfig);
+
+        ReducedConcatStringTree s1("6BZRfvt3GfPwQi9MC", &litStringHash);
+        ReducedConcatStringTree s2("11", &litStringHash);
+        ReducedConcatStringTree s3("vKmGhiG", &litStringHash);
+
+        cout << litStringHash.toString() << endl;
+        cout << litStringHash.getLastInsertedIndex() << endl;
+
+}
+
+void tc301(){
+
+    HashConfig hashConfig(8, 0.567125, 0.260537, 0.958892, 1.66552, 4);
+    LitStringHash litStringHash(hashConfig);
+
+    ReducedConcatStringTree s1("6ZAOZ", &litStringHash);
+    ReducedConcatStringTree s2("QLMW4v", &litStringHash);
+    ReducedConcatStringTree s3("p2lIeVjW", &litStringHash);
+    cout<< litStringHash.toString() << endl;
+    try
+    {
+        ReducedConcatStringTree s4("fEmB22OXMBjl", &litStringHash);
+        
+        cout<< litStringHash.toString() << endl;
+
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    cout<< litStringHash.toString() << endl;
+}
+
+void tc331(){
+    
+    HashConfig hashConfig(8, 0.567125, 0.260537, 0.958892, 1.66552, 4);
+    LitStringHash litStringHash(hashConfig);
+
+    ReducedConcatStringTree *s1 = new RCST("6ZAOZ", &litStringHash);
+    cout<< litStringHash.toString() << endl;
+    cout<< litStringHash.getLastInsertedIndex() << endl;
+    ReducedConcatStringTree *s2= new RCST("QLMW4v", &litStringHash);
+    
+    cout<< litStringHash.toString() << endl;
+    cout<< litStringHash.getLastInsertedIndex() << endl;
+    ReducedConcatStringTree *s3= new RCST("p2lIeVjW", &litStringHash);
+    
+    cout<< litStringHash.toString() << endl;
+    cout<< litStringHash.getLastInsertedIndex() << endl;
+    try
+    {
+        
+        ReducedConcatStringTree *s4= new RCST("NLK", &litStringHash);
+        
+        cout<< litStringHash.toString() << endl;
+        cout<< litStringHash.getLastInsertedIndex() << endl;
+    
+        delete s4;
+
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    
+
+    delete s1;
+    delete s2;
+    delete s3;
+}
+
+
+
+
+void tc333(){
+    
+    HashConfig hashConfig(1, 2, 0, 0.9, 1.35, 3);
+    LitStringHash litStringHash(hashConfig);
+
+    ReducedConcatStringTree *s1 = new RCST("A", &litStringHash);
+    cout<< litStringHash.toString() << endl;
+    cout<< litStringHash.getLastInsertedIndex() << endl;
+    ReducedConcatStringTree *s2= new RCST("C", &litStringHash);
+    
+    cout<< litStringHash.toString() << endl;
+    cout<< litStringHash.getLastInsertedIndex() << endl;
+    ReducedConcatStringTree *s3= new RCST("E", &litStringHash);
+    
+    cout<< litStringHash.toString() << endl;
+    cout<< litStringHash.getLastInsertedIndex() << endl;
+    
+
+    delete s1;
+    delete s2;
+    delete s3;
+}
+
 int main() {
 
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -988,7 +1144,7 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    tc342();
+    tc333();
     _CrtDumpMemoryLeaks();
     return 0;
 }

@@ -172,76 +172,31 @@ void tc11(){
 }
 void tc12(){
     
-    CST s1("Hello"), s2("World");
-    cout<<s1.get(0)<<endl;
-    cout<<s1.get(1)<<endl;
-    cout<<s1.get(2)<<endl;
-    cout<<s1.get(3)<<endl;
-    cout<<s1.get(4)<<endl;
-    cout<<s1.indexOf('H')<<endl;
-    cout<<s1.indexOf('e')<<endl;
-    cout<<s1.indexOf('l')<<endl;
-    cout<<s1.indexOf('l')<<endl;
-    cout<<s1.indexOf('o')<<endl;
-    cout<<s1.indexOf('a')<<endl;
-    cout<<s1.toStringPreOrder()<<endl;
-    cout<<s1.toString()<<endl;
+    CST *s1 = new CST("Hello"), *s2 = new CST("World");
 
-    CST s3 = s1.concat(s2);
-    cout<<endl<<endl;
-    cout<<s3.get(5)<<endl;
-    cout<<s3.get(6)<<endl;
-    cout<<s3.get(7)<<endl;
-    cout<<s3.get(8)<<endl;
-    cout<<s3.get(9)<<endl;
-    cout<<s3.indexOf('W')<<endl;
-    cout<<s3.indexOf('o')<<endl;
-    cout<<s3.indexOf('r')<<endl;
-    cout<<s3.indexOf('l')<<endl;
-    cout<<s3.indexOf('d')<<endl;
-    cout<<s3.indexOf('a')<<endl;
-    cout<<s3.toStringPreOrder()<<endl;
-    cout<<s3.toString()<<endl;
+    CST *s3 = new CST (s1->concat(*s2));
+    
+    CST *s4 = new CST( s3->subString(1,9));
+    CST *s6 = new CST(s3->subString(1,4));
+    cout<<"s4 = "<<s4->toStringPreOrder()<<endl;
+    cout<<"s6 = "<<s6->toStringPreOrder()<<endl;
 
-    cout<<endl<<endl;
+    CST *s5 = new CST(s4->reverse());
+    CST *s7 = new CST(s6->reverse());
+    cout<<"s5 = "<<s5->toStringPreOrder()<<endl;
+    cout<<"s7 = "<<s7->toStringPreOrder()<<endl;
 
-    CST s4 = s3.subString(1,9);
-    CST s6 = s3.subString(1,4);
-    cout<<"s4 = "<<s4.toStringPreOrder()<<endl;
-    cout<<"s6 = "<<s6.toStringPreOrder()<<endl;
+    delete s7;
+    delete s5;
+    delete s6;
+    delete s4;
+    delete s3;
+    delete s2;
+    delete s1;
 
-    CST s5 = s4.reverse();
-    CST s7 = s6.reverse();
-    cout<<"s5 = "<<s5.toStringPreOrder()<<endl;
-    cout<<"s7 = "<<s7.toStringPreOrder()<<endl;
 
 }
-void tc14(){
-    ConcatStringTree s1("Hello");
-        ConcatStringTree s2 = s1.concat(s1).concat(s1);
-        cout << s2.toStringPreOrder()<<endl;   
-        cout<<s2.getParTreeSize("")<<endl;
-        cout<<s2.getParTreeStringPreOrder("")<<endl;
-        cout<<s2.getParTreeSize("ll")<<endl;
-        cout<<s2.getParTreeStringPreOrder("ll")<<endl;
 
-        ConcatStringTree s3 = s1.concat(s2).subString(0, s2.length());
-        cout << s3.toStringPreOrder()<<endl;
-            
-        cout<<s3.getParTreeSize("")<<endl;
-        cout<<s3.getParTreeStringPreOrder("")<<endl;
-        cout<<s3.getParTreeSize("l")<<endl;
-        cout<<s3.getParTreeStringPreOrder("l")<<endl;
-        
-        ConcatStringTree s4 = s3.reverse();
-        cout << s4.toStringPreOrder()<<endl;
-        
-    cout<<s4.getParTreeSize("")<<endl;
-    cout<<s4.getParTreeStringPreOrder("")<<endl;
-    cout<<s4.getParTreeSize("l")<<endl;
-    cout<<s4.getParTreeStringPreOrder("l")<<endl;
-        cout << "\n";
-}
 
 void tc15(){
         ConcatStringTree *sA = new CST("ABC"), *sB = new CST("DEF"), *sC = new CST("GHI");
@@ -423,7 +378,7 @@ void tc19(){
     ConcatStringTree *t2 = new ConcatStringTree("Luke,");
     ConcatStringTree *t3 = new ConcatStringTree("Jerry,");
     ConcatStringTree *t4 = new ConcatStringTree("Than Don Dat Viet");
-    ConcatStringTree* s0 = new ConcatStringTree(t1->concat(*t4));
+    ConcatStringTree *s0 = new ConcatStringTree(t1->concat(*t4));
     ConcatStringTree s1 = s0->concat(*t3);
     ConcatStringTree s2 = s1.concat(*t2);
 
@@ -431,6 +386,8 @@ void tc19(){
     delete t3;
     delete s0;
     cout << s1.getParTreeStringPreOrder("ll") << endl;
+    delete t2;
+    delete t4;
 }
 
 void tc20(){
@@ -686,160 +643,7 @@ void tc47() {
     //_CrtDumpMemoryLeaks();
 }
 
-void tc164(){
-    //self concat
-    CST s0("Hello");
-    CST s1 = s0.concat(s0);
-    
-    cout<<"s1 = "<<s1.toStringPreOrder()<<endl;
-    cout<<"s1 = "<<s1.toString()<<endl;
-    
 
-    CST s2 = s0.concat(s0);
-    cout<<"s2 = "<<s2.toStringPreOrder()<<endl;
-    cout<<"s2 = "<<s2.toString()<<endl; 
-    
-    
-    CST s3 = s1.concat(s0);
-    cout<<"s3 = "<<s3.toStringPreOrder()<<endl;
-    cout<<"s3 = "<<s3.toString()<<endl; 
-
-    
-    CST s4 = s3.concat(s3);
-    cout<<"s4 = "<<s4.toStringPreOrder()<<endl;
-    cout<<"s4 = "<<s4.toString()<<endl; 
-
-
-
-    CST s5 = s4.reverse();
-    cout<<"s5 = "<<s5.toStringPreOrder()<<endl;
-    cout<<"s5 = "<<s5.toString()<<endl; 
-
-}
-
-
-void tc165(){
-    //self concat
-    CST s0("Hello");
-    CST s1 = s0.concat(s0);
-    
-    cout<<"s1 = "<<s1.toStringPreOrder()<<endl;
-    cout<<"s1 = "<<s1.toString()<<endl;
-    
-
-    CST s2 = s0.concat(s0);
-    cout<<"s2 = "<<s2.toStringPreOrder()<<endl;
-    cout<<"s2 = "<<s2.toString()<<endl; 
-    
-    
-    CST s3 = s1.concat(s0);
-    cout<<"s3 = "<<s3.toStringPreOrder()<<endl;
-    cout<<"s3 = "<<s3.toString()<<endl; 
-
-    
-    CST s4 = s3.concat(s3);
-    cout<<"s4 = "<<s4.toStringPreOrder()<<endl;
-    cout<<"s4 = "<<s4.toString()<<endl; 
-
-
-
-    CST s5 = s4.reverse();
-    cout<<"s5 = "<<s5.toStringPreOrder()<<endl;
-    cout<<"s5 = "<<s5.toString()<<endl; 
-
-    
-    CST s6 = s5.subString(0,s5.length());
-    cout<<"s6 = "<<s6.toStringPreOrder()<<endl;
-    cout<<"s6 = "<<s6.toString()<<endl; 
-
-    
-    CST s7 = s4.concat(s5);
-    cout<<"s7 = "<<s7.toStringPreOrder()<<endl;
-    cout<<"s7 = "<<s7.toString()<<endl; 
-
-    CST s8 = s7.concat(s7);
-    cout<<"s8 = "<<s8.toStringPreOrder()<<endl;
-    cout<<"s8 = "<<s8.toString()<<endl; 
-    
-    CST s9 = s8.reverse();
-    cout<<"s9 = "<<s9.toStringPreOrder()<<endl;
-    cout<<"s9 = "<<s9.toString()<<endl; 
-
-    
-    CST s10 = s9.concat(s9);
-    cout<<"s10 = "<<s10.toStringPreOrder()<<endl;
-    cout<<"s10 = "<<s10.toString()<<endl; 
-}
-void tc166(){
-    //self concat
-    CST s0("Hello");
-    CST s1 = s0.concat(s0);
-    
-    cout<<"s1 = "<<s1.toStringPreOrder()<<endl;
-    cout<<"s1 = "<<s1.toString()<<endl;
-    
-
-    CST s2 = s1.concat(s0);
-    cout<<"s2 = "<<s2.toStringPreOrder()<<endl;
-    cout<<"s2 = "<<s2.toString()<<endl; 
-    
-    
-    CST s3 = s2.concat(s1);
-    cout<<"s3 = "<<s3.toStringPreOrder()<<endl;
-    cout<<"s3 = "<<s3.toString()<<endl; 
-
-    
-    CST s4 = s1.concat(s2);
-    cout<<"s4 = "<<s4.toStringPreOrder()<<endl;
-    cout<<"s4 = "<<s4.toString()<<endl; 
-
-
-    CST s5 = s3.concat(s1);
-    cout<<"s5 = "<<s5.toStringPreOrder()<<endl;
-    cout<<"s5 = "<<s5.toString()<<endl; 
-
-    
-    CST s6 = s5.concat(s0);
-    cout<<"s6 = "<<s6.toStringPreOrder()<<endl;
-    cout<<"s6 = "<<s6.toString()<<endl; 
-
-    CST s7 = s6.reverse();
-    cout<<"s7 = "<<s7.toStringPreOrder()<<endl;
-    cout<<"s7 = "<<s7.toString()<<endl; 
-
-    CST s8 = s7.concat(s6);
-    cout<<"s8 = "<<s8.toStringPreOrder()<<endl;
-    cout<<"s8 = "<<s8.toString()<<endl; 
-    
-    CST s9 = s8.concat(s8);
-    cout<<"s9 = "<<s9.toStringPreOrder()<<endl;
-    cout<<"s9 = "<<s9.toString()<<endl; 
-
-    
-    CST s10 = s9.subString(s9.length()*1/4, s9.length()*3/4);
-    cout<<"s10 = "<<s10.toStringPreOrder()<<endl;
-    cout<<"s10 = "<<s10.toString()<<endl; 
-
-    CST s11 = s10.subString(s10.length()*1/4, s10.length()*3/4);
-    cout<<"s11 = "<<s11.toStringPreOrder()<<endl;
-    cout<<"s11 = "<<s11.toString()<<endl; 
-
-    CST s12 = s9.reverse();
-    cout<<"s12 = "<<s12.toStringPreOrder()<<endl;
-    cout<<"s12 = "<<s12.toString()<<endl; 
-
-    
-    CST s13 = s12.concat(s10);
-    cout<<"s13 = "<<s13.toStringPreOrder()<<endl;
-    cout<<"s13 = "<<s13.toString()<<endl;
-
-    
-    CST s14 = s13.concat(s13);
-    cout<<"s14 = "<<s14.toStringPreOrder()<<endl;
-    cout<<"s14 = "<<s14.toString()<<endl;
-
-
-}
 
 void tc200() {
     HashConfig hashConfig(
@@ -1137,6 +941,91 @@ void tc333(){
     delete s3;
 }
 
+void tc350() {
+
+    HashConfig hashConfig(
+        2,
+        0.5,
+        0.5,
+        0.75,
+        2.0,
+        4
+    );
+    LitStringHash* litStringHash = new LitStringHash(hashConfig);
+    ReducedConcatStringTree* s1 = new ReducedConcatStringTree("a", litStringHash);
+    ReducedConcatStringTree* s2 = new ReducedConcatStringTree("bb", litStringHash);
+
+    ReducedConcatStringTree* s3 = new ReducedConcatStringTree(s1->concat(*s2));
+
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    delete s3;
+
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    delete s1;
+
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    delete s2;
+
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    delete litStringHash;
+}
+
+void tc351() {
+
+    HashConfig hashConfig(
+        2,
+        0.5,
+        0.5,
+        0.75,
+        2.0,
+        4
+    );
+    LitStringHash* litStringHash = new LitStringHash(hashConfig);
+    ReducedConcatStringTree* s1 = new ReducedConcatStringTree("a", litStringHash);
+    ReducedConcatStringTree* s2 = new ReducedConcatStringTree("b", litStringHash);
+    ReducedConcatStringTree* s3 = new ReducedConcatStringTree("b", litStringHash);
+    ReducedConcatStringTree* s4 = new ReducedConcatStringTree("c", litStringHash);
+
+    ReducedConcatStringTree* s5 = new ReducedConcatStringTree(s1->concat(*s2));
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+    
+    ReducedConcatStringTree* s6 = new ReducedConcatStringTree(s3->concat(*s4));
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    ReducedConcatStringTree* s7 = new ReducedConcatStringTree(s5->concat(*s6));
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    cout << "DELETEING \n";
+    delete s4;
+    cout << litStringHash->toString() << endl;
+
+    delete s1;
+    cout << litStringHash->toString() << endl;
+    
+    delete s2;
+    cout << litStringHash->toString() << endl;
+
+    delete s3;
+    cout << litStringHash->toString() << endl;
+
+    delete s5;
+    cout << litStringHash->toString() << endl;
+
+    delete s6;
+    cout << litStringHash->toString() << endl;
+
+    delete s7;
+    cout << litStringHash->toString() << endl;
+
+    delete litStringHash;
+}
+
+
 int main() {
 
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -1147,15 +1036,11 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    //tc1();
-    //tc11();
-    //tc12();
-    //tc14();
+    /*tc1();
+    tc11();
+    tc12();
     tc15();
     tc16();
-    tc164();
-    tc165();
-    tc166();
     tc17();
     tc18();
     tc19();
@@ -1165,15 +1050,15 @@ int main() {
     tc23();
     tc24();
     tc25();
-    tc200();
-    tc201();
-    tc3();
-    tc38();
-    tc301();
-    tc331();
-    tc333();
+    tc3();*/
+    //tc200();
+    //tc201();
+    /*tc38();
     tc342();
-    tc367();
+    tc367();*/
+
+    tc351();
+
     _CrtDumpMemoryLeaks();
     return 0;
 }

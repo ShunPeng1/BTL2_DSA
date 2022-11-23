@@ -18,12 +18,16 @@ typedef long long ll;
 #define YES cout<<"YES"
 #define NO cout<<"NO"
 
+
 #define CST ConcatStringTree
+
 #define PT ParentsTree
 #define LS LitString
 #define LSH LitStringHash
 #define RCST ReducedConcatStringTree
 #define HC HashConfig
+
+
 
 // CSTNode SECTION
 CSTNode::CSTNode(int _leftLength=0, int _length = 0, string _data = "", CSTNode *_left = nullptr, CSTNode *_right=nullptr, int _numOfRef = 0): 
@@ -32,10 +36,67 @@ CSTNode::CSTNode(int _leftLength=0, int _length = 0, string _data = "", CSTNode 
     data(_data),
     left(_left),
     right(_right),
-    myId(0),
-    numOfRef(_numOfRef)
+    myId(0)
 {
 }
+
+
+CSTNode * CST::removeParentNode(CSTNode * current){
+    
+    if(current->parent.findPTNode(current->parent.root, current->myId)){
+        current->parent.deleteNode(current->parent.root, current->myId);
+    }
+
+    if(current->parent.size()==0){
+        CSTNode * left = current->left, *right = current->right;
+        if(left && left->parent.findPTNode(left->parent.root, current->myId)){
+            left->parent.deleteNode(left->parent.root, current->myId);
+            
+            if(left->parent.size()==0){
+                current->left = removeParentNode(left);
+            }
+        }
+        if(right && right->parent.findPTNode(right->parent.root, current->myId)){
+            right->parent.deleteNode(right->parent.root, current->myId);
+
+            if(right->parent.size()==0){
+                current->right = removeParentNode(right);
+            }
+        }
+        delete current;
+        return nullptr;
+
+    }
+    return current;
+}
+
+void CSTNode::insertParentNode(CSTNode * current, bool isInsertingSelf){
+
+    PTNode *ptnode = new PTNode(current, 0,0,nullptr,nullptr);
+    ptnode->newID(1);
+    
+    CSTNode * left = current->left , *right = current->right;
+
+    if(left && !left->parent.findPTNode(left->parent.root, current->myId)) {
+        PTNode *leftNode = new PTNode(current,  current->myId,0,nullptr,nullptr);
+        left->parent.insert(left->parent.root, leftNode);
+    }
+
+    if(right && !right->parent.findPTNode(right->parent.root, current->myId)){
+        PTNode *rightNode = new PTNode(current,  current->myId,0,nullptr,nullptr);
+        right->parent.insert(right->parent.root, rightNode);
+         
+    }
+
+    if(isInsertingSelf && !current->parent.findPTNode(current->parent.root, current->myId)){
+    //if( !current->parent.findPTNode(current->parent.root, current->myId)){
+        current->parent.insert(current->parent.root, ptnode);
+    }
+    else{
+        delete ptnode;
+    }
+}
+
 
 // CST SECTION
 CST::CST(CSTNode *_root = nullptr, int _numOfNode = 0 ,bool _isTemporary = false, bool _isShallowNorDeep = false): 
@@ -44,7 +105,7 @@ CST::CST(CSTNode *_root = nullptr, int _numOfNode = 0 ,bool _isTemporary = false
     isTemporary(_isTemporary),
     isShallowNorDeep(_isShallowNorDeep)
 {
-}  
+}
 
 CST::CST(const CST&& otherS) {
     this->root = nullptr;
@@ -59,27 +120,27 @@ CST::CST(const CST&& otherS) {
     //is return from the reverse or substring so we deep copy
         
     struct TempStruct{    
-        static CSTNode* executeFunc(CSTNode * root, TempStruct &result, CSTNode*left, CSTNode *right){
+        CSTNode *otherRoot ;
+        static CSTNode* executeFunc(CSTNode * current, TempStruct &result, CSTNode*left, CSTNode *right){
             CSTNode *cstnode = new CSTNode();
-            *(cstnode) = *(root);
+            *(cstnode) = *(current);
             cstnode->left = left;
             cstnode->right = right;
 
+            cstnode->insertParentNode(cstnode, result.otherRoot == current);
 
-            if(root->left) delete root->left;
-            if(root->right) delete root->right;
+            if(current->left) delete current->left;
+            if(current->right) delete current->right;
 
             return cstnode;
         }
     };
 
-    
-    TempStruct obj;
+    TempStruct obj{otherS.root};
     this->root = postorder(otherS.root, obj, TempStruct::executeFunc);
+    
     delete otherS.root;
 
-    this->createParentAndChildAncestor();    
-    
 }
 
 CST::CST(const char * _s){
@@ -106,46 +167,51 @@ CST::CST(const char * _s){
 CST::~CST(){
     if(isTemporary || root==nullptr) return;
     
-    struct TempStruct{   
+    root = removeParentNode(root);
+
+    // struct TempStruct{   
         
-        static void reduceReferenceFunc(CSTNode * root, TempStruct &result){
-            root->numOfRef--;
-        }  
+    //     static void reduceReferenceFunc(CSTNode * root, TempStruct &result){
+    //         root->numOfRef--;
+    //     }  
 
-        static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
+    //     static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
             
-            if(root->numOfRef == 0 ){
-                root->left = nullptr;
-                root->right = nullptr;
-                delete root;
-            }
-            return nullptr;
+    //         if(root->numOfRef == 0 ){
+    //             root->left = nullptr;
+    //             root->right = nullptr;
+    //             delete root;
+    //         }
+    //         return nullptr;
 
-        }  
-    };
+    //     }  
+    // };
     
-    int  deletingId = root->myId;
-    root->parent.deleteNode(root->parent.root, deletingId);
+
+
+    // int  deletingId = root->myId;
+    // root->parent.deleteNode(root->parent.root, deletingId);
     
-    CSTNode * left = this->root->left , *right = this->root->right;
+    // CSTNode * left = this->root->left , *right = this->root->right;
     
-    if(left && left->parent.findPTNode(left->parent.root, deletingId)) {
-        left->parent.deleteNode(left->parent.root, deletingId);
-    }
+    // if(left && left->parent.findPTNode(left->parent.root, deletingId)) {
+    //     left->parent.deleteNode(left->parent.root, deletingId);
+    // }
 
-    if(right && right->parent.findPTNode(right->parent.root, deletingId)) {
-        right->parent.deleteNode(right->parent.root, deletingId);
-    }
+    // if(right && right->parent.findPTNode(right->parent.root, deletingId)) {
+    //     right->parent.deleteNode(right->parent.root, deletingId);
+    // }
 
 
-    TempStruct obj;
-    preorder(root, obj, TempStruct::reduceReferenceFunc);
-    if( root->numOfRef == 0){
-        postorder(root, obj, TempStruct::deleteFunc);
-        root = nullptr;
-    }
+    // TempStruct obj;
+    // preorder(root, obj, TempStruct::reduceReferenceFunc);
+    // if( root->numOfRef == 0){
+    //     postorder(root, obj, TempStruct::deleteFunc);
+    //     root = nullptr;
+    // }
 
 }
+
 
 int CST::length() const{
     return root->length;
@@ -248,10 +314,10 @@ string CST::toString() const{
 ConcatStringTree CST::concat(const ConcatStringTree & otherS) const{
 
     CSTNode *cstnode = new CSTNode(this->length(), this->root->length+ otherS.length(),"", this->root, otherS.root, 0);
+    cstnode->insertParentNode(cstnode, true);
+
     CST result(cstnode, this->numOfNode+ otherS.numOfNode+1 , true, true);
-    
-    //parentTree
-    result.createParentAndChildAncestor();
+
     return (CST&&)result;
 }
 
@@ -396,37 +462,10 @@ string CST::getParTreeStringPreOrder(const string & query) const{
     return roam->parent.toStringPreOrder();
 }
 
-void CST::createParentAndChildAncestor() const{
-    
-    struct TempStruct{   
-        static void increaseReferenceFunc(CSTNode * root, TempStruct &result){
-            root->numOfRef++;  
-        }  
-    };
-    
-    PTNode *ptnode = new PTNode(this->root, 0,0,nullptr,nullptr);
-    if(this->isShallowNorDeep == 1) ptnode->newID(1);
-    else ptnode->newID(this->numOfNode);
-    
-    this->root->parent.insert(this->root->parent.root, ptnode);
-    
-    CSTNode * left = this->root->left , *right = this->root->right;
-    TempStruct obj;
-    preorder(this->root, obj, TempStruct::increaseReferenceFunc);
 
-    if(left && !left->parent.findPTNode(left->parent.root, ptnode->id)) {
-            
-        PTNode *leftNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
-        left->parent.insert(left->parent.root, leftNode);
-        
-    }
 
-    if(right && !right->parent.findPTNode(right->parent.root,ptnode->id)){
-        PTNode *rightNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
-        right->parent.insert(right->parent.root, rightNode);
-         
-    }
-}
+
+
 
 // PTNode SECTION
 int PTNode::maxId = 0;
@@ -480,13 +519,13 @@ HC::HC(int _p = 0, double _c1 = 0, double _c2 = 0, double _lambda= 0 , double _a
 }
 
 //LitString SECTION
-LS::LS(CSTNode *_data ,string _s , int _reference): data(_data),s(_s), reference(_reference)
+LS::LS(CSTNode *_data ,string _s , int _reference): data(_data),s(_s), myIdDuplicate(_reference)
 {
 
 }
 
 LS::~LS(){
-    if(reference == 0) delete data;
+    if(myIdDuplicate == 0) delete data;
 }
 
 //LitStringHash SECTION
@@ -560,7 +599,7 @@ void LSH::rehash(){
         if(current == nullptr){
             continue;
         }
-        LitString *nLitString = new LitString(current->data, current->s, current->reference);
+        LitString *nLitString = new LitString(current->data, current->s, current->myIdDuplicate);
         ll nIndex = probingFunc(nHash,current->s, nSize, true);
         if(nIndex == -1) {
             throw runtime_error("No possible slot");
@@ -589,18 +628,24 @@ CSTNode* LSH::insert(string s){
     if(litIndex == -1) {
         return nullptr;
     }
+
     CSTNode *cstnode = nullptr;
     if(litHash[litIndex] == nullptr){
         cstnode = new CSTNode(0, (int)s.size(), s, nullptr, nullptr, 1);
         litHash[litIndex] = new LS(cstnode, s, 1);
         numOfElement++;
         lastInsertedIndex = litIndex;
+
+        //Parent Tree
+        PTNode * ptnode  = new PTNode(cstnode,0,0, nullptr, nullptr);
+        ptnode->newID(1);
+        cstnode->parent.insert(cstnode->parent.root, ptnode);
     }
     else{
-        litHash[litIndex]->reference++;
+        litHash[litIndex]->myIdDuplicate++;
         cstnode = litHash[litIndex]->data;
     }
-
+    
 
     //cout<<"index = "<<litIndex << ", litHash[litIndex] = " << litHash[litIndex]->s << ", ref = " << litHash[litIndex]->reference << endl;
     if((double)numOfElement/(double)config.initSize > config.lambda) {
@@ -611,16 +656,24 @@ CSTNode* LSH::insert(string s){
     return cstnode;
 }
 
-bool LSH::remove(string s) {
+bool LSH::remove(string s, bool isMyId) {
     ll index = probingFunc(litHash, s, config.initSize,false);
     if ( index == -1 || litHash[index] == NULL) {
         throw runtime_error("No possible slot");
     }
     //cout << "litHash[index] " << litHash[index]->s << " = " << litHash[index]->reference << endl;
 
-    litHash[index]->reference--;
-    if(litHash[index]->reference == 0){
+    CSTNode *cstnode = litHash[index]->data;
+    if (isMyId) {
+        litHash[index]->myIdDuplicate--;
         
+        if ( litHash[index]->myIdDuplicate == 0 && cstnode->parent.findPTNode(cstnode->parent.root, cstnode->myId)){
+            cstnode->parent.deleteNode(cstnode->parent.root, cstnode->myId);
+        }
+    }
+    
+    if(litHash[index]->myIdDuplicate == 0 && litHash[index]->data->parent.size()== 0){
+    
         delete litHash[index];
         litHash[index] = nullptr;
         numOfElement--;
@@ -641,7 +694,7 @@ string LSH::toString() const{
     FOR(i,0,config.initSize){
         if(result.back() == ')') result+= ";";
         result+= "(";
-        if(litHash[i]!= nullptr && litHash[i]->reference!=0){
+        if(litHash[i]!= nullptr && litHash[i]->myIdDuplicate!=0){
             result+= "litS=\""+ litHash[i]->s+"\"";
         }
         result+= ")";
@@ -671,15 +724,6 @@ RCST::RCST(const char * _s, LitStringHash * _litStringHash){
         throw runtime_error("No possible slot");
     }
 
-    // if(cstnode->myId == 0){
-        
-    //     PTNode * ptnode  = new PTNode(cstnode,0,0, nullptr, nullptr);
-    //     ptnode->newID(1);
-    //     cstnode->parent.insert(cstnode->parent.root, ptnode);
-    // }
-    // else{
-
-    // }
 
     root = cstnode;
     numOfNode = 1;
@@ -694,7 +738,7 @@ RCST::RCST(CSTNode * _root = nullptr, LitStringHash * _litStringHash = nullptr, 
 
 }
 
-RCST::RCST(RCST && otherS){
+RCST::RCST(RCST&& otherS){
     this->root = nullptr;
     this->litStringHash = otherS.litStringHash;
     this->numOfNode = otherS.numOfNode;
@@ -702,126 +746,132 @@ RCST::RCST(RCST && otherS){
     this->isTemporary = false;
     if (otherS.isShallowNorDeep) {//is return from concat so we shallow copy
         (this->root) = (otherS.root);
-
-        struct TempStruct{    
         
-            LitStringHash *litStringHash;
-            static void executeFunc(CSTNode * root, TempStruct &result){
-                if(root->left == nullptr && root->right == nullptr && root->data!=""){//is string node
-                    result.litStringHash->insert(root->data);
-                }
-            }
-        };
+        // struct TempStruct{    
+        //     LitStringHash *litStringHash;
+            
+        //     static void executeFunc(CSTNode * root, TempStruct &result){
+        //         if(root->left == nullptr && root->right == nullptr && root->data!=""){//is string node
+        //             result.litStringHash->insert(root->data);
+        //         }
+        //     }
+        // };
+        // TempStruct obj{this->litStringHash};
+        // preorder(this->root, obj, TempStruct::executeFunc);
 
-        TempStruct obj{this->litStringHash};
-        preorder(otherS.root, obj, TempStruct::executeFunc);
-
-        return;
+        return ;
     }
 
     //is return from the reverse or substring so we deep copy
         
     struct TempStruct{    
     
+        CSTNode *otherRoot;
         LitStringHash *litStringHash;
-        static CSTNode* executeFunc(CSTNode * root, TempStruct &result, CSTNode*left, CSTNode *right){
+        static CSTNode* executeFunc(CSTNode * current, TempStruct &result, CSTNode*left, CSTNode *right){
             CSTNode *cstnode = nullptr;
-            if(root->left == nullptr && root->right == nullptr && root->data!=""){//is string node
-                cstnode = result.litStringHash->insert(root->data);
+            if(current->left == nullptr && current->right == nullptr && current->data!=""){//is string node
+                cstnode = result.litStringHash->insert(current->data);
             }
             else{
                 cstnode = new CSTNode();
-                *(cstnode) = *(root);
+                *(cstnode) = *(current);
                 cstnode->left = left;
                 cstnode->right = right;
+
+                cstnode->insertParentNode(cstnode, result.otherRoot == current);
             }
 
-            if(root->left) delete root->left;
-            if(root->right) delete root->right;
+            if(current->left) delete current->left;
+            if(current->right) delete current->right;
 
             return cstnode;
         }
     };
 
     
-    TempStruct obj{this->litStringHash};
+    TempStruct obj{otherS.root,this->litStringHash};
     this->root = postorder(otherS.root, obj, TempStruct::executeFunc);
     delete otherS.root;
 
-    this->createParentAndChildAncestor();    
     
 }
 
 RCST::~RCST(){
     if(isTemporary || root==nullptr) return;
     
-    struct TempStruct{   
+    // struct TempStruct{   
        
-        LitStringHash *litStringHash;
+    //     LitStringHash *litStringHash;
 
-        
-        static void reduceReferenceFunc(CSTNode * root, TempStruct &result){
-            root->numOfRef--;
-        }  
-
-        static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
+    //     static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
             
-            if (root->left == nullptr && root->right == nullptr && root->data != "") {
+    //         if (root->left == nullptr && root->right == nullptr && root->data != "") {
                 
-                if(result.litStringHash->remove(root->data)){
-                    return nullptr;
-                }
-            }
-            else if (root->numOfRef == 0){//is non-string node
-                root->left = nullptr;
-                root->right = nullptr;
-                delete root;
-                return nullptr;
-            }
-            return root;
-        }  
-    };
+    //             if(result.litStringHash->remove(root->data)){
+    //                 return nullptr;
+    //             }
+    //         }
+    //         else if (root->numOfRef == 0){//is non-string node
+    //             root->left = nullptr;
+    //             root->right = nullptr;
+    //             delete root;
+    //             return nullptr;
+    //         }
+    //         return root;
+    //     }  
+    // };
     
-    if(root->left == nullptr && root->right == nullptr && root->data != ""){
-        litStringHash->remove(root->data);
-        root->numOfRef--;
-        isTemporary = true;
-        return;
-    }
+    // if(root->left == nullptr && root->right == nullptr && root->data != ""){
+    //     litStringHash->remove(root->data);
+    //     root->numOfRef--;
+    //     isTemporary = true;
+    //     return;
+    // }
 
-    int  deletingId = root->myId;
-    if (root->parent.findPTNode(root->parent.root,deletingId))
-        root->parent.deleteNode(root->parent.root,deletingId);
+    // int  deletingId = root->myId;
+    // if (root->parent.findPTNode(root->parent.root,deletingId))
+    //     root->parent.deleteNode(root->parent.root,deletingId);
     
-    TempStruct obj{litStringHash};
-    preorder(root, obj, TempStruct::reduceReferenceFunc);
+    // TempStruct obj{litStringHash};
+    // preorder(root, obj, TempStruct::reduceReferenceFunc);
 
-    CSTNode * left = this->root->left , *right = this->root->right;
-    if(left && left->parent.findPTNode(left->parent.root, deletingId)) {
-        left->parent.deleteNode(left->parent.root, deletingId);
+    // CSTNode * left = this->root->left , *right = this->root->right;
+    // if(left && left->parent.findPTNode(left->parent.root, deletingId)) {
+    //     left->parent.deleteNode(left->parent.root, deletingId);
 
-    }
+    // }
 
-    if(right && right->parent.findPTNode(right->parent.root, deletingId)) {
-        right->parent.deleteNode(right->parent.root, deletingId);
-    }
+    // if(right && right->parent.findPTNode(right->parent.root, deletingId)) {
+    //     right->parent.deleteNode(right->parent.root, deletingId);
+    // }
 
-    if(root->numOfRef == 0){
-        postorder(root, obj, TempStruct::deleteFunc);
-        root = nullptr;
-    }
+    // if(root->numOfRef == 0){
+    //     postorder(root, obj, TempStruct::deleteFunc);
+    //     root = nullptr;
+    // }
     
     isTemporary = true;
+
+    if(root->left == nullptr && root->right == nullptr && root->data!=""){
+        if (this->litStringHash->remove(root->data, true)) {
+            
+            root= nullptr;
+        }
+        return; 
+    }    
+    else root = removeParentNode(root);
+
+    return;
 }
 
 
 ReducedConcatStringTree RCST::concat(const ReducedConcatStringTree& otherS) const {
 
     CSTNode* cstnode = new CSTNode(this->length(), this->root->length + otherS.length(), "", this->root, otherS.root, 0);
+    cstnode->insertParentNode(cstnode, true);    
     RCST result(cstnode, this->litStringHash, this->numOfNode+otherS.numOfNode,true, true);
 
-    //parentTree
-    result.createParentAndChildAncestor();
     return (RCST&&)result;
 }
 
@@ -931,36 +981,41 @@ ReducedConcatStringTree RCST::reverse() const{
 }
 
 
+CSTNode * RCST::removeParentNode(CSTNode * current){
+    
+    if(current->left == nullptr && current->right == nullptr && current->data!=""){
+        if (this->litStringHash->remove(current->data, false)) {
+            return nullptr;
+        } 
+        else return current;
+    }
+    else{
+        if(current->parent.findPTNode(current->parent.root, current->myId)){
+            current->parent.deleteNode(current->parent.root, current->myId);
+        }
 
-void RCST::createParentAndChildAncestor() const{
-    
-    struct TempStruct{   
-        static void increaseReferenceFunc(CSTNode * root, TempStruct &result){
-            root->numOfRef++;
-        }  
-    };
-    
-    PTNode *ptnode = new PTNode(this->root, 0,0,nullptr,nullptr);
-    if(this->isShallowNorDeep == 1) ptnode->newID(1);
-    else ptnode->newID(this->numOfNode);
+        if(current->parent.size()==0){
+            CSTNode * left = current->left, *right = current->right;
+            if(left && left->parent.findPTNode(left->parent.root, current->myId)){
+                left->parent.deleteNode(left->parent.root, current->myId);
 
+                if(left->parent.size()==0){
+                    current->left = removeParentNode(left);
+                }
+            }
+            if(right && right->parent.findPTNode(right->parent.root, current->myId)){
+                right->parent.deleteNode(right->parent.root, current->myId);
 
-    this->root->parent.insert(this->root->parent.root, ptnode);
-    
-    TempStruct obj;
-    preorder(root, obj, TempStruct::increaseReferenceFunc);
-    CSTNode * left = this->root->left , *right = this->root->right;
-    if(left && !left->parent.findPTNode(left->parent.root, ptnode->id)) {
-            
-        PTNode *leftNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
-        left->parent.insert(left->parent.root, leftNode);
-    
+                if(right->parent.size()==0){
+                    current->right = removeParentNode(right);
+                }
+            }
+            delete current;
+            return nullptr;
+
+        }
+        return current;
     }
 
-    if(right && !right->parent.findPTNode(right->parent.root,ptnode->id)){
-        PTNode *rightNode = new PTNode(ptnode->data, ptnode->id,0,nullptr,nullptr);
-        right->parent.insert(right->parent.root, rightNode);
-        
-    }
-
+    
 }

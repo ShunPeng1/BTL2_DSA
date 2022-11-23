@@ -256,9 +256,10 @@ struct CSTNode{
     int myId;
     class ParentsTree parent;
     
-    int numOfRef;
     
     CSTNode(int,int,string, CSTNode *, CSTNode *, int );
+    
+    void insertParentNode(CSTNode*, bool );
 };
 
 class ConcatStringTree {
@@ -274,6 +275,8 @@ public:
     ConcatStringTree(CSTNode *_root, int, bool _isTemporary, bool _isShallowNorDeep);
     ConcatStringTree(const char * s);
     virtual ~ConcatStringTree();
+    
+
     int length() const;
     char get(int index);
     int indexOf(char c);
@@ -283,10 +286,10 @@ public:
     ConcatStringTree subString(int from, int to) const;
     ConcatStringTree reverse() const;
 
+    virtual CSTNode * removeParentNode(CSTNode* );
     int getParTreeSize(const string & query) const;
     string getParTreeStringPreOrder(const string & query) const;
 
-    virtual void createParentAndChildAncestor() const;
 };
 
 
@@ -310,7 +313,7 @@ class LitString{
 public:
     CSTNode *data;
     string s;
-    int reference;
+    int myIdDuplicate;
 
     LitString(CSTNode *,string, int);
     ~LitString();
@@ -333,7 +336,7 @@ public:
     long long probingFunc(LitString **&,string, long long, bool);
     void rehash();
     CSTNode* insert(string);
-    bool remove(string);
+    bool remove(string, bool );
 
 };
 class ReducedConcatStringTree : public ConcatStringTree { 
@@ -349,10 +352,9 @@ public:
     ReducedConcatStringTree subString(int from, int to) const;
     ReducedConcatStringTree reverse() const;
     ReducedConcatStringTree concat(const ReducedConcatStringTree& otherS) const;
-    void createParentAndChildAncestor() const;
+
+    CSTNode * removeParentNode(CSTNode* );
 };
-
-
 
 template <class T> 
 CSTNode* searchNode(CSTNode* root, T& key, bool (*acceptFunc) (CSTNode*, T&) , bool (*branchRightFunc)(CSTNode*,T&))

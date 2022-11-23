@@ -203,12 +203,18 @@ public:
             }
         }
 
-        if(balanceFactor(p)==2 && balanceFactor(p->left)==1){ p = llrotation(p); }                  
-        else if(balanceFactor(p)==2 && balanceFactor(p->left)==-1){ p = lrrotation(p); }
-        else if(balanceFactor(p)==2 && balanceFactor(p->left)==0){ p = llrotation(p); }
-        else if(balanceFactor(p)==-2 && balanceFactor(p->right)==-1){ p = rrrotation(p); }
-        else if(balanceFactor(p)==-2 && balanceFactor(p->right)==1){ p = rlrotation(p); }
-        else if(balanceFactor(p)==-2 && balanceFactor(p->right)==0){ p = llrotation(p); }
+        if(balanceFactor(p)==2 && balanceFactor(p->left)==1)
+            p = llrotation(p);              
+        else if(balanceFactor(p)==2 && balanceFactor(p->left)==-1)
+            p = lrrotation(p); 
+        else if(balanceFactor(p)==2 && balanceFactor(p->left)==0)
+            p = llrotation(p); 
+        else if(balanceFactor(p)==-2 && balanceFactor(p->right)==-1) 
+            p = rrrotation(p); 
+        else if(balanceFactor(p)==-2 && balanceFactor(p->right)==1)
+            p = rlrotation(p); 
+        else if(balanceFactor(p)==-2 && balanceFactor(p->right)==0)
+            p = rrrotation(p); 
 
         
         return p;

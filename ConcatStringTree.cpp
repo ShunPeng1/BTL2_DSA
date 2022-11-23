@@ -169,47 +169,6 @@ CST::~CST(){
     
     root = removeParentNode(root);
 
-    // struct TempStruct{   
-        
-    //     static void reduceReferenceFunc(CSTNode * root, TempStruct &result){
-    //         root->numOfRef--;
-    //     }  
-
-    //     static CSTNode* deleteFunc(CSTNode * root, TempStruct &result, CSTNode* left, CSTNode *right){
-            
-    //         if(root->numOfRef == 0 ){
-    //             root->left = nullptr;
-    //             root->right = nullptr;
-    //             delete root;
-    //         }
-    //         return nullptr;
-
-    //     }  
-    // };
-    
-
-
-    // int  deletingId = root->myId;
-    // root->parent.deleteNode(root->parent.root, deletingId);
-    
-    // CSTNode * left = this->root->left , *right = this->root->right;
-    
-    // if(left && left->parent.findPTNode(left->parent.root, deletingId)) {
-    //     left->parent.deleteNode(left->parent.root, deletingId);
-    // }
-
-    // if(right && right->parent.findPTNode(right->parent.root, deletingId)) {
-    //     right->parent.deleteNode(right->parent.root, deletingId);
-    // }
-
-
-    // TempStruct obj;
-    // preorder(root, obj, TempStruct::reduceReferenceFunc);
-    // if( root->numOfRef == 0){
-    //     postorder(root, obj, TempStruct::deleteFunc);
-    //     root = nullptr;
-    // }
-
 }
 
 
@@ -672,7 +631,7 @@ bool LSH::remove(string s, bool isMyId) {
         }
     }
     
-    if(litHash[index]->myIdDuplicate == 0 && litHash[index]->data->parent.size()== 0){
+    if(litHash[index]->myIdDuplicate == 0 && cstnode->parent.size() == 0){
     
         delete litHash[index];
         litHash[index] = nullptr;
@@ -694,7 +653,7 @@ string LSH::toString() const{
     FOR(i,0,config.initSize){
         if(result.back() == ')') result+= ";";
         result+= "(";
-        if(litHash[i]!= nullptr && litHash[i]->myIdDuplicate!=0){
+        if(litHash[i]!= nullptr ){
             result+= "litS=\""+ litHash[i]->s+"\"";
         }
         result+= ")";

@@ -643,6 +643,67 @@ void tc47() {
     //_CrtDumpMemoryLeaks();
 }
 
+void tc103(){
+    CST * s1 = new CST("a");
+    CST * s2 = new CST("b");
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    CST * s3 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    CST * s4 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    CST * s5 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    CST * s6 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    
+    CST * s7 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    CST * s8 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+
+    CST * s9 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+
+    CST * s10 = new CST(s2->concat(*s1));
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    
+    delete s5;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s4;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s6;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    delete s10;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s9;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s8;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s7;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    delete s3;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+    
+    delete s2;
+    cout <<s2->getParTreeStringPreOrder("")<<endl;
+
+    delete s1;
+}
 
 
 void tc200() {
@@ -1000,24 +1061,101 @@ void tc351() {
     cout << litStringHash->getLastInsertedIndex() << endl;
     cout << litStringHash->toString() << endl;
 
-    cout << "DELETEING \n";
+
+    cout << "s7 = " << s7->getParTreeSize("") << endl;
+    cout << "s5 = " << s7->getParTreeSize("l") << endl;
+    cout << "s1 = " << s7->getParTreeSize("ll") << endl;
+    cout << "s2 = " << s7->getParTreeSize("lr") << endl;
+    cout << "s6 = " << s7->getParTreeSize("r") << endl;
+    cout << "s3 = " << s7->getParTreeSize("rl") << endl;
+    cout << "s4 = " << s7->getParTreeSize("rr") << endl;
+
+
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s3 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
+
+
     delete s4;
+    cout << "DELETEING s4\n";
     cout << litStringHash->toString() << endl;
+
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s3 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
 
     delete s1;
+
+    cout << "DELETEING s1\n";
     cout << litStringHash->toString() << endl;
+
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s3 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
     
     delete s2;
+
+    cout << "DELETEING s2\n";
     cout << litStringHash->toString() << endl;
+
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s3 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
 
     delete s3;
+
+    cout << "DELETEING s3\n";
     cout << litStringHash->toString() << endl;
+
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s3 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
 
     delete s5;
+
+    cout << "DELETEING s5\n";
     cout << litStringHash->toString() << endl;
 
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s3 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
+
     delete s6;
+
+    cout << "DELETEING s6\n";
     cout << litStringHash->toString() << endl;
+
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s3 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
 
     delete s7;
     cout << litStringHash->toString() << endl;
@@ -1057,7 +1195,10 @@ int main() {
     tc342();
     tc367();*/
 
-    tc351();
+    //tc350();
+    //tc351();
+
+    tc103();
 
     _CrtDumpMemoryLeaks();
     return 0;

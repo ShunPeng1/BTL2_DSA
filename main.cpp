@@ -328,7 +328,10 @@ void tc16(){
     ConcatStringTree *t3 = new ConcatStringTree("his_is");
     ConcatStringTree *t4 = new ConcatStringTree("_an");
 
-    ConcatStringTree s1 = t1->concat(*t2).concat(*t3).concat(*t4);
+    //ConcatStringTree s1 = t1->concat(*t2).concat(*t3).concat(*t4);
+    ConcatStringTree * v1 = new ConcatStringTree( t1->concat(*t2));
+    ConcatStringTree s1 = v1->concat(*t3);
+    delete v1;
 
     delete t1;
     delete t2;
@@ -1144,7 +1147,33 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
+    //tc1();
+    //tc11();
+    //tc12();
+    //tc14();
+    tc15();
+    tc16();
+    tc164();
+    tc165();
+    tc166();
+    tc17();
+    tc18();
+    tc19();
+    tc2();
+    tc20();
+    tc22();
+    tc23();
+    tc24();
+    tc25();
+    tc200();
+    tc201();
+    tc3();
+    tc38();
+    tc301();
+    tc331();
     tc333();
+    tc342();
+    tc367();
     _CrtDumpMemoryLeaks();
     return 0;
 }

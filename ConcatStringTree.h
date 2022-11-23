@@ -34,6 +34,7 @@ public:
     
     ParentsTree(){
         root = nullptr;
+        numElement = 0;
     }
     int calHeight(PTNode *p){
 
@@ -240,7 +241,6 @@ public:
     }
 
     ~ParentsTree(){
-
     }
 };
 
@@ -255,10 +255,10 @@ struct CSTNode{
 
     int myId;
     class ParentsTree parent;
-    //class AncestorList ancestor;
-    class ParentsTree ancestor;
     
-    CSTNode(int,int,string, CSTNode *, CSTNode * );
+    int numOfRef;
+    
+    CSTNode(int,int,string, CSTNode *, CSTNode *, int );
 };
 
 class ConcatStringTree {
@@ -333,8 +333,7 @@ public:
     long long probingFunc(LitString **&,string, long long, bool);
     void rehash();
     CSTNode* insert(string);
-    //int searchKey();
-    void remove(string);
+    bool remove(string);
 
 };
 class ReducedConcatStringTree : public ConcatStringTree { 

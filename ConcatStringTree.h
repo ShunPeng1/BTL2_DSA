@@ -330,8 +330,11 @@ public:
     LitString **litHash;
     HashConfig config;
     int numOfElement = 0;
-
+    int maxElement = 0 ;
     int lastInsertedIndex = -1;
+
+    void createHash();
+    void deleteHash();
 
     LitStringHash(const HashConfig & hashConfig);
     ~LitStringHash();

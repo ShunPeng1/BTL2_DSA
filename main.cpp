@@ -700,7 +700,6 @@ void tc103(){
     cout <<s2->getParTreeStringPreOrder("")<<endl;
     
     delete s2;
-    cout <<s2->getParTreeStringPreOrder("")<<endl;
 
     delete s1;
 }
@@ -1164,6 +1163,86 @@ void tc351() {
 }
 
 
+void tc352() {
+
+    HashConfig hashConfig(
+        2,
+        0.5,
+        0.5,
+        0.75,
+        2.0,
+        4
+    );
+    LitStringHash* litStringHash = new LitStringHash(hashConfig);
+    ReducedConcatStringTree* s1 = new ReducedConcatStringTree("a", litStringHash);
+    ReducedConcatStringTree* s2 = new ReducedConcatStringTree("b", litStringHash);
+
+    ReducedConcatStringTree* s4 = new ReducedConcatStringTree("c", litStringHash);
+
+    ReducedConcatStringTree* s5 = new ReducedConcatStringTree(s1->concat(*s2));
+    
+    ReducedConcatStringTree* s6 = new ReducedConcatStringTree(s2->concat(*s4));
+
+    ReducedConcatStringTree* s7 = new ReducedConcatStringTree(s5->concat(*s6));
+    cout << litStringHash->getLastInsertedIndex() << endl;
+    cout << litStringHash->toString() << endl;
+
+    cout << "s7 = " << s7->getParTreeStringPreOrder("") << endl;
+    cout << "s5 = " << s7->getParTreeStringPreOrder("l") << endl;
+    cout << "s1 = " << s7->getParTreeStringPreOrder("ll") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("lr") << endl;
+    cout << "s6 = " << s7->getParTreeStringPreOrder("r") << endl;
+    cout << "s2 = " << s7->getParTreeStringPreOrder("rl") << endl;
+    cout << "s4 = " << s7->getParTreeStringPreOrder("rr") << endl;
+    
+    delete s4;
+    delete s1;
+    delete s2;
+    delete s5;
+    delete s6;
+    delete s7;
+    delete litStringHash;
+}
+
+
+void tc358()
+{
+	HashConfig h = HashConfig(9, 0.738121, 0.74752, 0.745705, 1.56618, 7);
+	LitStringHash* lsh = new LitStringHash(h);
+
+	ReducedConcatStringTree* r0 = new ReducedConcatStringTree("8tXNY6", lsh);
+	ReducedConcatStringTree* r1 = new ReducedConcatStringTree("zmJTUgylXufHci5qO", lsh);
+	ReducedConcatStringTree* r2 = new ReducedConcatStringTree("vOiC3PK", lsh);
+	ReducedConcatStringTree* r3 = new ReducedConcatStringTree("Znvo", lsh);
+	ReducedConcatStringTree* r4 = new ReducedConcatStringTree("2p41S", lsh);
+	ReducedConcatStringTree* r5 = new ReducedConcatStringTree("1zDn1LyRJvlAH6PyYn", lsh);
+	ReducedConcatStringTree* r6 = new ReducedConcatStringTree("WvOK", lsh);
+	ReducedConcatStringTree* r7 = new ReducedConcatStringTree("Bp1mVx5eMYzTU6", lsh);
+	ReducedConcatStringTree* r8 = new ReducedConcatStringTree("K", lsh);
+	ReducedConcatStringTree* r9 = new ReducedConcatStringTree("IeyRAEVM7Wv3k3LI", lsh);
+
+	ReducedConcatStringTree* r10 = new ReducedConcatStringTree("xWTALZbWJup6glGxKHAu", lsh);
+	cout << lsh->toString() << endl;
+	cout << lsh->getLastInsertedIndex() << endl;
+
+	ReducedConcatStringTree* r11 = new ReducedConcatStringTree("q0Swy1SoGaS24Tr", lsh);
+	cout << lsh->toString() << endl;
+	cout << lsh->getLastInsertedIndex() << endl;
+
+	delete r0;
+	delete r1;
+	delete r2;
+	delete r3;
+	delete r4;
+	delete r5;
+	delete r6;
+	delete r7;
+	delete r8;
+	delete r9;
+	delete r10;
+	delete lsh;
+}
+
 int main() {
 
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -1174,7 +1253,7 @@ int main() {
     _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
     _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 
-    /*tc1();
+    tc1();
     tc11();
     tc12();
     tc15();
@@ -1188,17 +1267,16 @@ int main() {
     tc23();
     tc24();
     tc25();
-    tc3();*/
-    //tc200();
-    //tc201();
-    /*tc38();
+    tc3();
+    tc38();
     tc342();
-    tc367();*/
-
-    //tc350();
-    //tc351();
-
+    tc367();
+    tc350();
+    tc351();
+    tc352();
     tc103();
+   
+    tc351();
 
     _CrtDumpMemoryLeaks();
     return 0;

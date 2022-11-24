@@ -491,17 +491,31 @@ LS::~LS(){
 LSH::LSH(const HashConfig &_config){
     config = _config;
     lastInsertedIndex = -1;
-    litHash = new LS*[config.initSize];
-    FOR(i,0,config.initSize){
-        litHash[i] = nullptr;
-    }
+    numOfElement = 0;
+    maxElement = 0;
 }
 
 LSH::~LSH(){
-    if(numOfElement == 0){
-        delete [] litHash;
-        litHash = nullptr;
-        lastInsertedIndex = -1;
+    if(litHash){
+        deleteHash();
+    }
+}
+
+void LSH::deleteHash(){
+
+    delete [] litHash;
+    litHash = nullptr;
+    lastInsertedIndex = -1;
+    maxElement = 0;
+    numOfElement = 0;
+}
+
+void LSH::createHash(){
+    lastInsertedIndex = -1;
+    maxElement = config.initSize;
+    litHash = new LS*[config.initSize];
+    FOR(i,0,config.initSize){
+        litHash[i] = nullptr;
     }
 }
 
@@ -546,14 +560,14 @@ ll LSH::probingFunc(LitString **&currLitHash,string s, ll m,bool acceptNull){
 }
 
 void LSH::rehash(){
-    ll nSize = (config.alpha* (double)config.initSize);
+    ll nSize = (config.alpha* (double)maxElement);
     LitString **nHash = new LitString*[nSize];
 
     bool nLastInserted = true;
     FOR(i, 0, nSize){
         nHash[i] = nullptr;
     }
-    FOR(i,0,config.initSize){
+    FOR(i,0,maxElement){
         LitString *current = litHash[i];
         if(current == nullptr){
             continue;
@@ -573,16 +587,20 @@ void LSH::rehash(){
 
     delete []litHash;
     litHash = nHash;
-    config.initSize = nSize;
+    maxElement = nSize;
 }
 
 CSTNode* LSH::insert(string s){
     
-    if(numOfElement == config.initSize){
+    if(numOfElement == 0){
+        createHash();
+    }
+
+    if(numOfElement == maxElement){
         throw runtime_error("No possible slot");
     }
     
-    ll litIndex = probingFunc(litHash,s , config.initSize, true);
+    ll litIndex = probingFunc(litHash,s , maxElement, true);
     
     if(litIndex == -1) {
         return nullptr;
@@ -607,7 +625,7 @@ CSTNode* LSH::insert(string s){
     
 
     //cout<<"index = "<<litIndex << ", litHash[litIndex] = " << litHash[litIndex]->s << ", ref = " << litHash[litIndex]->reference << endl;
-    if((double)numOfElement/(double)config.initSize > config.lambda) {
+    if((double)numOfElement/(double)maxElement > config.lambda) {
         //cout<<"DEBUG: Before rehash : "<<this->toString()<<endl;
         rehash();
     }
@@ -616,7 +634,7 @@ CSTNode* LSH::insert(string s){
 }
 
 bool LSH::remove(string s, bool isMyId) {
-    ll index = probingFunc(litHash, s, config.initSize,false);
+    ll index = probingFunc(litHash, s, maxElement, false);
     if ( index == -1 || litHash[index] == NULL) {
         throw runtime_error("No possible slot");
     }
@@ -636,7 +654,11 @@ bool LSH::remove(string s, bool isMyId) {
         delete litHash[index];
         litHash[index] = nullptr;
         numOfElement--;
-        if(index == lastInsertedIndex) lastInsertedIndex = -1;
+
+        if(numOfElement == 0){
+            deleteHash();
+        }
+
         return true;
     }
     
@@ -650,7 +672,7 @@ int LSH::getLastInsertedIndex() const{
 
 string LSH::toString() const{
     string result = "LitStringHash[";
-    FOR(i,0,config.initSize){
+    FOR(i,0,maxElement){
         if(result.back() == ')') result+= ";";
         result+= "(";
         if(litHash[i]!= nullptr ){
@@ -706,18 +728,6 @@ RCST::RCST(RCST&& otherS){
     if (otherS.isShallowNorDeep) {//is return from concat so we shallow copy
         (this->root) = (otherS.root);
         
-        // struct TempStruct{    
-        //     LitStringHash *litStringHash;
-            
-        //     static void executeFunc(CSTNode * root, TempStruct &result){
-        //         if(root->left == nullptr && root->right == nullptr && root->data!=""){//is string node
-        //             result.litStringHash->insert(root->data);
-        //         }
-        //     }
-        // };
-        // TempStruct obj{this->litStringHash};
-        // preorder(this->root, obj, TempStruct::executeFunc);
-
         return ;
     }
 
